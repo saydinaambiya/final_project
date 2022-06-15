@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "702658327778",
+    "project_id": "final-project-b3526",
+    "storage_bucket": "final-project-b3526.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702658327778:android:97fdc9a46ebaca6ac15abb",
+        "android_client_info": {
+          "package_name": "com.example.car_rental_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702658327778-f3uq67p0laqd4fq3jsiieiii956coqan.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.car_rental_ui",
+            "certificate_hash": "b5956f60ee5c29a86693852b1cf77366504e069e"
+          }
+        },
+        {
+          "client_id": "702658327778-fidijb0g680rsmuo369cfbdg35gg31qr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvtRSG7Yaz3VseWx5OzJk7AKKIVULxTaA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702658327778-fidijb0g680rsmuo369cfbdg35gg31qr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "702658327778-cm0s1f8lfu9f9iel89483a1boblfu0th.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.carRentalUi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
