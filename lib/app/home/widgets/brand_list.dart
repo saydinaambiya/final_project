@@ -118,7 +118,13 @@ class BrandItem extends StatelessWidget {
           : EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        // boxShadow: [BoxShadow(color: Colors..withOpacity(0.5))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            spreadRadius: 0.5,
+            blurRadius: 10,
+          )
+        ],
         color: (isSelected)
             ? Colors.blue
             : (index == 0)

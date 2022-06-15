@@ -51,6 +51,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            spreadRadius: 0.5,
+                            blurRadius: 10,
+                          )
+                        ],
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(120),
@@ -100,9 +107,16 @@ class _ProfilePageState extends State<ProfilePage> {
                             size: 60,
                           ),
                           decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(60))),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 0.5,
+                                blurRadius: 10,
+                              )
+                            ],
+                            borderRadius: BorderRadius.all(Radius.circular(60)),
+                          ),
                           width: 100,
                           height: 100,
                         ),

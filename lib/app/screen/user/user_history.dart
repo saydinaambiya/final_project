@@ -39,7 +39,43 @@ class _UserHistoryState extends State<UserHistory> {
                       IconButton(
                         icon: Icon(FontAwesomeIcons.list),
                         onPressed: () {
-                          print("Search");
+                          showModalBottomSheet(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              context: context,
+                              builder: (context) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          icon: Icon(FontAwesomeIcons.xmark),
+                                        ),
+                                        Text(
+                                          "Semua Transaksi",
+                                          style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    BreakLine(),
+                                    TextModal(text: "Semua Transaksi"),
+                                    BreakLine(),
+                                    TextModal(text: "Belum Dibayar"),
+                                    BreakLine(),
+                                    TextModal(text: "Dibatalkan"),
+                                    BreakLine(),
+                                    TextModal(text: "Selesai"),
+                                    BreakLine(),
+                                  ],
+                                );
+                              });
                         },
                       ),
                     ],

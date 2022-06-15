@@ -12,14 +12,22 @@ class CardHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, left: 10, right: 10, top: 10),
+      margin: EdgeInsets.only(bottom: 5, left: 10, right: 10, top: 5),
       padding: EdgeInsets.only(left: 10),
       height: 120,
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(width: 1, color: Colors.black),
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 0.5,
+              blurRadius: 10,
+            )
+          ]
+          // border: Border.all(width: 1, color: Colors.black),
+          ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
