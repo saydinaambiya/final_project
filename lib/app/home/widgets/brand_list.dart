@@ -1,3 +1,4 @@
+import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:car_rental_ui/constants/text_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -126,9 +127,9 @@ class BrandItem extends StatelessWidget {
           )
         ],
         color: (isSelected)
-            ? Colors.blue
+            ? color1
             : (index == 0)
-                ? Colors.black12
+                ? Colors.white
                 : Colors.white,
         // boxShadow: [
         //   BoxShadow(

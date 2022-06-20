@@ -2,6 +2,7 @@ import 'package:car_rental_ui/app/home/views/cars_recom.dart';
 import 'package:car_rental_ui/app/home/widgets/home_content.dart';
 import 'package:car_rental_ui/app/screen/user/user_history.dart';
 import 'package:car_rental_ui/app/screen/user/user_profile.dart';
+import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFf9ffff),
+      backgroundColor: color1,
       body: screens[index],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(

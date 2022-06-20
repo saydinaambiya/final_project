@@ -1,4 +1,5 @@
 import 'package:car_rental_ui/app/screen/detail_cars/detail_cars.dart';
+import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -54,7 +55,7 @@ class CarItem extends StatelessWidget {
                           style: GoogleFonts.montserrat(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black38,
+                            color: color4,
                           ),
                         ),
                       ],
@@ -70,7 +71,7 @@ class CarItem extends StatelessWidget {
                         text: TextSpan(
                           style: GoogleFonts.montserrat(
                               fontSize: 16,
-                              color: Colors.black87,
+                              color: color4,
                               fontWeight: FontWeight.w500),
                           children: const <TextSpan>[
                             TextSpan(text: '\Rp 350.000 '),
@@ -91,9 +92,12 @@ class CarItem extends StatelessWidget {
                           child: Text(
                             "Details",
                             style: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w400, fontSize: 18),
+                                color: color1,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18),
                           ),
                           style: ElevatedButton.styleFrom(
+                            primary: color3,
                             elevation: 0,
                             shape: new RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
