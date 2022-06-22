@@ -1,3 +1,5 @@
+import 'package:car_rental_ui/app/home/views/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -124,7 +126,11 @@ class TextModal extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => WelcomePage()));
+            },
             child: Text(
               text,
               style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),

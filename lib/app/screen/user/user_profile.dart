@@ -1,4 +1,7 @@
+import 'package:car_rental_ui/app/home/models/user_model.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +16,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user?.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -75,11 +93,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(height: 100),
                         UserData(
                           title: "Full Name",
-                          value: "Saydina Ambiya",
+                          value: "${loggedInUser.fullName}",
                         ),
                         UserData(
                           title: "Email",
-                          value: "saydina@email.com",
+                          value: "${loggedInUser.email}",
                         ),
                         UserData(
                           title: "Password",
@@ -87,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         UserData(
                           title: "Phone / Whatsapp",
-                          value: "085156307564",
+                          value: "${loggedInUser.phoneNumber}",
                         ),
                         UserData(
                           title: "Address",

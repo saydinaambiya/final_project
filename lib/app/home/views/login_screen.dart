@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'home_screen.dart';
 import 'sigup_screen.dart';
 
 class LoginPage extends StatelessWidget {
+  final emailC = new TextEditingController();
+  final passwC = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +60,7 @@ class LoginPage extends StatelessWidget {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          // controller: emailC,
+                          controller: emailC,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
@@ -69,7 +73,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         TextFormField(
-                          // controller: passwC,
+                          controller: passwC,
                           obscureText: true,
                           decoration: InputDecoration(
                             hintText: "Enter your password",
@@ -88,11 +92,20 @@ class LoginPage extends StatelessWidget {
                     child: MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                      onPressed: () async {
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => HomeScreen()));
+                        await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: emailC.text, password: passwC.text)
+                            .then((email) => {
+                                  Fluttertoast.showToast(msg: "Login Succes"),
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen())),
+                                });
                       },
                       color: Colors.grey,
                       elevation: 0,
