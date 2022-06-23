@@ -31,7 +31,9 @@ Future<dynamic> settingPopup(BuildContext context) => showModalBottomSheet(
           BreakLine(),
           TextModal(text: "Edit Profile"),
           BreakLine(),
-          TextModal(text: "Logout"),
+          TextModal(
+            text: "Logout",
+          ),
           BreakLine(),
         ],
       );

@@ -28,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .get()
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
     });
   }
 
@@ -109,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         UserData(
                           title: "Address",
-                          value: "Lhokseumawe",
+                          value: "${loggedInUser.address}",
                         ),
                       ],
                     ),
