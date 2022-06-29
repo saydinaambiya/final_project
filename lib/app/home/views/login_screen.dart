@@ -1,3 +1,6 @@
+import 'package:car_rental_ui/app/home/views/repository/auth_repository.dart';
+import 'package:car_rental_ui/app/home/views/repository/user_repository.dart';
+import 'package:car_rental_ui/app/route/route_page.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +8,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'home_screen.dart';
 import 'sigup_screen.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final emailC = new TextEditingController();
+
   final passwC = new TextEditingController();
+
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  String errorMessage = '';
-  bool isLoading = false;
+
+  // String errorMessage = '';
+  AutRepository _user = AutRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -102,17 +113,17 @@ class LoginPage extends StatelessWidget {
                         onPressed: () async {
                           if (_key.currentState!.validate()) {
                             try {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: emailC.text, password: passwC.text)
-                                  .then((email) => {
-                                        showNotif(context, "Login Succes"),
-                                        Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomeScreen())),
-                                      });
-                              errorMessage = '';
+                              _user
+                                  .getDataUser(emailC.text, passwC.text)
+                                  .then((value) {
+                                if (value != null) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => RoutePage()));
+                                }
+                              });
+                              // errorMessage = '';
                             } on FirebaseAuthException catch (e) {
                               showNotif(context, e.message.toString());
                             }
