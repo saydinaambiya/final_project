@@ -1,4 +1,4 @@
-import 'package:car_rental_ui/app/route/route_page.dart';
+import 'package:car_rental_ui/app/screen/admin/admin_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'app/home/views/welcome_screen.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: WelcomePage(),
+      home: AdminPage(),
     );
   }
 }

@@ -1,11 +1,9 @@
 import 'package:car_rental_ui/app/home/views/repository/auth_repository.dart';
-import 'package:car_rental_ui/app/home/views/repository/user_repository.dart';
 import 'package:car_rental_ui/app/route/route_page.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home_screen.dart';
 import 'sigup_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -117,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .getDataUser(emailC.text, passwC.text)
                                   .then((value) {
                                 if (value != null) {
+                                  showNotif(context, "Login Succes");
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(

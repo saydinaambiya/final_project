@@ -1,4 +1,3 @@
-import 'package:car_rental_ui/app/home/models/user_model.dart';
 import 'package:car_rental_ui/app/home/models/user_model_view.dart';
 import 'package:car_rental_ui/app/home/views/home_screen.dart';
 import 'package:car_rental_ui/app/home/views/login_screen.dart';
@@ -28,7 +27,6 @@ class _RoutePageState extends State<RoutePage> {
             return StreamBuilder<UserModelView>(
                 stream: UserRepositoty().getUser(user.data!.email).asStream(),
                 builder: (context, snapshot) {
-                  debugPrint('level adalah ${snapshot.data?.level}');
                   return snapshot.data?.level == 'admin'
                       ? AdminPage()
                       : HomeScreen();

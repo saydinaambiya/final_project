@@ -29,29 +29,44 @@ class _HomeScreenState extends State<HomeScreen> {
       body: screens[index],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-            indicatorColor: Colors.grey[200],
+            indicatorColor: color4,
             labelTextStyle: MaterialStateProperty.all(GoogleFonts.montserrat(
-                fontSize: 12, fontWeight: FontWeight.w500))),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: color1,
+            ))),
         child: NavigationBar(
           height: 60,
-          backgroundColor: Colors.grey[200],
+          backgroundColor: color4,
           selectedIndex: index,
           onDestinationSelected: (index) => setState(() => this.index = index),
           destinations: [
             NavigationDestination(
-              icon: Icon(FontAwesomeIcons.house),
+              icon: Icon(
+                FontAwesomeIcons.house,
+                color: color1,
+              ),
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(FontAwesomeIcons.solidThumbsUp),
+              icon: Icon(
+                FontAwesomeIcons.solidThumbsUp,
+                color: color1,
+              ),
               label: 'Recommend',
             ),
             NavigationDestination(
-              icon: Icon(FontAwesomeIcons.solidFileLines),
+              icon: Icon(
+                FontAwesomeIcons.solidFileLines,
+                color: color1,
+              ),
               label: 'Transactions',
             ),
             NavigationDestination(
-              icon: Icon(FontAwesomeIcons.solidUser),
+              icon: Icon(
+                FontAwesomeIcons.solidUser,
+                color: color1,
+              ),
               label: 'Profile',
             ),
           ],
