@@ -1,3 +1,7 @@
+import 'package:car_rental_ui/app/screen/admin/contents/admin_content.dart';
+import 'package:car_rental_ui/app/screen/admin/contents/manage_content.dart';
+import 'package:car_rental_ui/app/screen/admin/contents/profile_content.dart';
+import 'package:car_rental_ui/app/screen/admin/contents/transaction_content.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,10 +17,10 @@ class AdminPage extends StatefulWidget {
 class _AdminPageState extends State<AdminPage> {
   int index = 0;
   final screens = [
-    Text("Ini halaman utama admin"),
-    Text("Ini halaman tambah/edit mobil"),
-    Text("Ini halaman transaksi admin"),
-    Text("Ini halaman profile admin"),
+    AdminHome(),
+    ManagePage(),
+    TransAdminPage(),
+    ProfileAdminPage()
   ];
   @override
   Widget build(BuildContext context) {
