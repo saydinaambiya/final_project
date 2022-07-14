@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
+import 'package:car_rental_ui/app/screen/admin/api/firebase_api.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/form_cars.dart';
+import 'package:path/path.dart';
 
 class ManagePage extends StatefulWidget {
   const ManagePage({Key? key}) : super(key: key);
@@ -24,6 +29,30 @@ class _ManagePageState extends State<ManagePage> {
   final recomC = new TextEditingController();
   final statusC = new TextEditingController();
   final priceC = new TextEditingController();
+
+  //var
+  File? file;
+  UploadTask? task;
+
+  //select
+  Future pickImage() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) return;
+    final path = result.files.single.path!;
+
+    setState(() => file = File(path));
+  }
+
+  //upload
+  Future uploadImage() async {
+    if (file == null) return;
+
+    final fileName = basename(file!.path);
+    final destination = 'images/$fileName';
+
+    FirebaseApi.uploadFile(destination, file!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,17 +170,25 @@ class _ManagePageState extends State<ManagePage> {
                             width: 15,
                           ),
                           GestureDetector(
-                            child: Text(
-                              "Upload Foto Mobil",
-                              style: GoogleFonts.montserrat(),
-                            ),
-                            onTap: () {},
+                            child: file != null
+                                ? Text(basename(file!.path))
+                                : Text(
+                                    "Upload Foto Mobil",
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                            onTap: () => {
+                              pickImage(),
+                            },
                           ),
                         ],
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        uploadImage();
+                      },
                       child: Text("Tambah Data"),
                     ),
                     SizedBox(
