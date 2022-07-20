@@ -25,19 +25,19 @@ class _AdminPageState extends State<AdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: color1,
+      backgroundColor: Colors.white,
       body: screens[index],
       bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
-              indicatorColor: color4,
+              indicatorColor: color1,
               labelTextStyle: MaterialStateProperty.all(GoogleFonts.montserrat(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: color1,
+                color: colorW,
               ))),
           child: NavigationBar(
               height: 60,
-              backgroundColor: color4,
+              backgroundColor: color1,
               selectedIndex: index,
               onDestinationSelected: (index) =>
                   setState(() => this.index = index),
@@ -45,25 +45,25 @@ class _AdminPageState extends State<AdminPage> {
                 NavigationDestination(
                     icon: Icon(
                       FontAwesomeIcons.house,
-                      color: color1,
+                      color: colorW,
                     ),
                     label: "Home"),
                 NavigationDestination(
                     icon: Icon(
                       FontAwesomeIcons.car,
-                      color: color1,
+                      color: colorW,
                     ),
                     label: "Cars"),
                 NavigationDestination(
                     icon: Icon(
                       FontAwesomeIcons.receipt,
-                      color: color1,
+                      color: colorW,
                     ),
                     label: "Transaction"),
                 NavigationDestination(
                     icon: Icon(
                       FontAwesomeIcons.solidUser,
-                      color: color1,
+                      color: colorW,
                     ),
                     label: "Profile"),
               ])),

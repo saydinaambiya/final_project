@@ -11,12 +11,13 @@ class UserRepositoty {
       return UserModelView();
     } else {
       return UserModelView(
-          address: query.docs[0]['address'] ?? '',
-          email: query.docs[0]['email'] ?? '',
-          fullName: query.docs[0]['fullName'] ?? '',
-          level: query.docs[0]['level'] ?? '',
-          phoneNumber: query.docs[0]['phoneNumber'] ?? '',
-          uid: query.docs[0]['uid'] ?? '');
+        address: query.docs[0]['address'] ?? '',
+        email: query.docs[0]['email'] ?? '',
+        fullName: query.docs[0]['fullName'] ?? '',
+        level: query.docs[0]['level'] ?? '',
+        phoneNumber: query.docs[0]['phoneNumber'] ?? '',
+        uid: query.docs[0]['uid'] ?? '',
+      );
     }
   }
 }

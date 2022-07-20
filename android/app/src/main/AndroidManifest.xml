@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.car_rental_ui">
    <application
-        android:label="car_rental_ui"
+        android:label="Cahaya Rental"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

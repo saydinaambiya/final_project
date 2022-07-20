@@ -25,47 +25,47 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: color1,
+      backgroundColor: colorW,
       body: screens[index],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-            indicatorColor: color4,
+            indicatorColor: color1,
             labelTextStyle: MaterialStateProperty.all(GoogleFonts.montserrat(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: color1,
+              color: colorW,
             ))),
         child: NavigationBar(
           height: 60,
-          backgroundColor: color4,
+          backgroundColor: color1,
           selectedIndex: index,
           onDestinationSelected: (index) => setState(() => this.index = index),
           destinations: [
             NavigationDestination(
               icon: Icon(
                 FontAwesomeIcons.house,
-                color: color1,
+                color: colorW,
               ),
               label: 'Home',
             ),
             NavigationDestination(
               icon: Icon(
                 FontAwesomeIcons.solidThumbsUp,
-                color: color1,
+                color: colorW,
               ),
               label: 'Recommend',
             ),
             NavigationDestination(
               icon: Icon(
                 FontAwesomeIcons.solidFileLines,
-                color: color1,
+                color: colorW,
               ),
               label: 'Transactions',
             ),
             NavigationDestination(
               icon: Icon(
                 FontAwesomeIcons.solidUser,
-                color: color1,
+                color: colorW,
               ),
               label: 'Profile',
             ),

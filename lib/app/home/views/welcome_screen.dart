@@ -1,4 +1,5 @@
 import 'package:car_rental_ui/app/home/views/login_screen.dart';
+import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,14 +27,17 @@ class _WelcomePageState extends State<WelcomePage> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text(
-                    "Welcome",
-                    style: GoogleFonts.montserrat(
-                        fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
+                  // Text(
+                  //   "Welcome",
+                  //   style: GoogleFonts.montserrat(
+                  //       fontSize: 30,
+                  //       fontWeight: FontWeight.bold,
+                  //       color: color1),
+                  // ),
                   SizedBox(
-                    height: 20,
-                  )
+                    height: 50,
+                  ),
+                  Image.asset("assets/images/logo.png"),
                 ],
               ),
               Column(
@@ -67,13 +71,15 @@ class _WelcomePageState extends State<WelcomePage> {
                           MaterialPageRoute(
                               builder: (context) => SignupPage()));
                     },
-                    color: Colors.grey,
+                    color: color1,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),
                     child: Text(
                       "Sign Up",
                       style: GoogleFonts.montserrat(
-                          fontSize: 18, fontWeight: FontWeight.w600),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: colorW),
                     ),
                   ),
                 ],

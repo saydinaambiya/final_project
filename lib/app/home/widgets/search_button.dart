@@ -17,7 +17,7 @@ class SearchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        margin: EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -36,6 +36,7 @@ class SearchButton extends StatelessWidget {
               ),
             ),
             IconButton(
+              alignment: Alignment.centerRight,
               icon: Icon(iconData),
               onPressed: () {},
             ),

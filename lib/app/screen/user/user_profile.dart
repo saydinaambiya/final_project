@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         )),
                     margin: EdgeInsets.only(top: 100),
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    height: 500,
+                    height: 470,
                     width: double.infinity,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

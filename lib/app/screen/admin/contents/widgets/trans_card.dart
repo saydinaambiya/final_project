@@ -1,21 +1,29 @@
 import 'package:car_rental_ui/app/home/views/welcome_screen.dart';
+import 'package:car_rental_ui/app/screen/user/widgets/modal_popup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'modal_popup.dart';
-
-class CardHistory extends StatelessWidget {
-  const CardHistory({
+class TransCard extends StatelessWidget {
+  const TransCard({
+    required this.imageURl,
+    required this.carName,
+    required this.carYear,
+    required this.price,
     Key? key,
   }) : super(key: key);
+
+  final String imageURl;
+  final String carName;
+  final String carYear;
+  final String price;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 5, left: 10, right: 10, top: 5),
-      padding: EdgeInsets.only(left: 10),
+      margin: EdgeInsets.only(bottom: 10, left: 20, right: 20, top: 10),
+      padding: EdgeInsets.only(left: 10, right: 10),
       height: 120,
       width: double.infinity,
       decoration: BoxDecoration(
@@ -33,13 +41,7 @@ class CardHistory extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 150,
-            height: 160,
-            child: Image.asset(
-              "assets/images/innova.png",
-            ),
-          ),
+          SizedBox(width: 155, height: 160, child: Image.network('$imageURl')),
           Padding(
             padding: const EdgeInsets.only(
               top: 20,
@@ -50,50 +52,33 @@ class CardHistory extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Tesla Model 3",
+                  carName,
                   style: GoogleFonts.montserrat(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                 ),
                 Text(
-                  "No. Transaksi",
+                  carYear,
                   style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.normal, fontSize: 12),
                 ),
                 Text(
-                  "Total Harga",
+                  price,
                   style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.bold, fontSize: 13),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.green[400],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Text(
-                      "Selesai",
-                      style: GoogleFonts.montserrat(fontSize: 10),
-                    ),
-                  ),
-                )
               ],
             ),
           ),
+          Spacer(),
           Padding(
-            padding: const EdgeInsets.only(left: 5, top: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                IconButton(
-                  icon: Icon(FontAwesomeIcons.ellipsisVertical),
-                  onPressed: () {
-                    modalPopup(context);
-                  },
-                )
-              ],
+            padding: const EdgeInsets.only(top: 10),
+            child: IconButton(
+              icon: Icon(FontAwesomeIcons.ellipsisVertical),
+              onPressed: () {
+                modalPopup(context);
+              },
             ),
           )
         ],
