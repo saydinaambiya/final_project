@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Cars {
   String cid;
   final String carName;
@@ -45,6 +43,7 @@ class Cars {
       };
 
   static Cars fromJson(Map<String, dynamic> json) => Cars(
+      cid: json['cid'],
       carName: json['carName'],
       brand: json['brand'],
       year: json['year'],

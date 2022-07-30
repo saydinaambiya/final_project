@@ -74,7 +74,9 @@ class _BookCarsState extends State<BookCars> {
             children: [
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 10),
-                  child: CarItem()),
+                  child: Text("Revisi")
+                  // CarItem(),
+                  ),
               SizedBox(height: 10),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),

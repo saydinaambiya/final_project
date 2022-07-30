@@ -37,7 +37,8 @@ class _WelcomePageState extends State<WelcomePage> {
                   SizedBox(
                     height: 50,
                   ),
-                  Image.asset("assets/images/logo.png"),
+                  Image.network(
+                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/images%2Flogo.png?alt=media&token=53507337-b3d4-4e2f-aaad-4017be5469f9'),
                 ],
               ),
               Column(
@@ -51,12 +52,14 @@ class _WelcomePageState extends State<WelcomePage> {
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     },
                     shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black),
+                        side: BorderSide(color: color1),
                         borderRadius: BorderRadius.circular(50)),
                     child: Text(
                       "Login",
                       style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w600, fontSize: 18),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: color1),
                     ),
                   ),
 

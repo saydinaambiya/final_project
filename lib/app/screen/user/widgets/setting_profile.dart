@@ -1,3 +1,6 @@
+import 'package:car_rental_ui/app/home/views/login_screen.dart';
+import 'package:car_rental_ui/app/home/views/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,10 +32,21 @@ Future<dynamic> settingPopup(BuildContext context) => showModalBottomSheet(
             ],
           ),
           BreakLine(),
-          TextModal(text: "Edit Profile"),
+          TextModal(
+            text: "Edit Profile",
+            tap: () {
+              Navigator.pop(context);
+            },
+          ),
           BreakLine(),
           TextModal(
             text: "Logout",
+            tap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => WelcomePage()));
+              showNotif(context, "Logout Success");
+            },
           ),
           BreakLine(),
         ],

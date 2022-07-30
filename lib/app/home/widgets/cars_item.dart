@@ -4,21 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+var size, height, width;
+
 class CarItem extends StatelessWidget {
   const CarItem({
+    required this.idC,
+    required this.carName,
+    required this.carYear,
+    required this.imageLink,
+    required this.carPrice,
+    required this.carFuel,
+    required this.carSeater,
+    required this.carTransmition,
+    required this.carBrand,
     Key? key,
   }) : super(key: key);
 
+  final String idC;
+  final String imageLink;
+  final String carName;
+  final String carYear;
+  final String carPrice;
+  final String carSeater;
+  final String carTransmition;
+  final String carFuel;
+  final String carBrand;
+
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
     return Container(
       width: double.infinity,
-      height: 140,
+      height: height / 5.90,
       padding: EdgeInsets.only(
-        left: 10,
+        left: 20,
         top: 10,
         bottom: 10,
-        right: 10,
+        right: 20,
       ),
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
@@ -37,10 +61,9 @@ class CarItem extends StatelessWidget {
           SizedBox(
             width: 170,
             height: 180,
-            child: Image.asset(
-              "assets/images/innova.png",
+            child: Image.network(
+              imageLink,
               fit: BoxFit.contain,
-              // color: Colors.amber,
             ),
           ),
           Spacer(),
@@ -49,12 +72,12 @@ class CarItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Innova Reborn",
+                carName,
                 style: GoogleFonts.montserrat(
                     fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
-                "2022",
+                carYear,
                 style: GoogleFonts.montserrat(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -67,8 +90,8 @@ class CarItem extends StatelessWidget {
                       fontSize: 14,
                       color: Colors.black,
                       fontWeight: FontWeight.w500),
-                  children: const <TextSpan>[
-                    TextSpan(text: '\Rp 350.000 '),
+                  children: <TextSpan>[
+                    TextSpan(text: 'Rp. $carPrice'),
                     TextSpan(
                         text: '/ Hari',
                         style: TextStyle(color: Colors.black38)),
@@ -91,8 +114,17 @@ class CarItem extends StatelessWidget {
                   ],
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => DetailCars()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => DetailCars(
+                            carId: idC,
+                            imageUrl: imageLink,
+                            name: carName,
+                            year: carYear,
+                            fuel: carFuel,
+                            price: carPrice,
+                            seaters: carSeater,
+                            transmition: carTransmition,
+                          )));
                 },
               )
             ],

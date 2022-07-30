@@ -77,12 +77,21 @@ class _ManagePageState extends State<ManagePage> {
                 text1: "New ",
                 text2: "Car",
                 iconData: FontAwesomeIcons.bars,
+                onTapped: () {
+                  print("Iya udah ditekan");
+                },
               ),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: colorW,
-                ),
+                    borderRadius: BorderRadius.circular(20),
+                    color: colorW,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 0.5,
+                        blurRadius: 10,
+                      )
+                    ]),
                 margin: EdgeInsets.only(
                   left: 20,
                   right: 20,
@@ -97,7 +106,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: carC,
                       hint: "Avanza Veloz",
                       label: "Car Name",
-                      iconData: Icon(FontAwesomeIcons.carRear),
+                      iconData: FontAwesomeIcons.carRear,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
@@ -105,7 +114,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: brandC,
                       hint: "Toyota",
                       label: "Brand",
-                      iconData: Icon(FontAwesomeIcons.bandcamp),
+                      iconData: FontAwesomeIcons.bandcamp,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
@@ -113,7 +122,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: yearC,
                       hint: "2022",
                       label: "Year",
-                      iconData: Icon(FontAwesomeIcons.calendarDays),
+                      iconData: FontAwesomeIcons.calendarDays,
                       keyboard: TextInputType.number,
                       inputAct: TextInputAction.next,
                     ),
@@ -121,7 +130,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: fuelC,
                       hint: "Solar",
                       label: "Fuel",
-                      iconData: Icon(FontAwesomeIcons.gasPump),
+                      iconData: FontAwesomeIcons.gasPump,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
@@ -129,7 +138,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: seaterC,
                       hint: "7",
                       label: "Seater",
-                      iconData: Icon(FontAwesomeIcons.couch),
+                      iconData: FontAwesomeIcons.couch,
                       keyboard: TextInputType.number,
                       inputAct: TextInputAction.next,
                     ),
@@ -137,15 +146,15 @@ class _ManagePageState extends State<ManagePage> {
                       cont: nopolC,
                       hint: "BL 123 AB",
                       label: "Nopol",
-                      iconData: Icon(FontAwesomeIcons.closedCaptioning),
+                      iconData: FontAwesomeIcons.closedCaptioning,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
                     FormCars(
                       cont: gearC,
                       hint: "Manual",
-                      label: "Transmition",
-                      iconData: Icon(FontAwesomeIcons.gears),
+                      label: "Transmission",
+                      iconData: FontAwesomeIcons.gears,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
@@ -153,7 +162,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: recomC,
                       hint: "Recommended",
                       label: "Recomendation",
-                      iconData: Icon(FontAwesomeIcons.award),
+                      iconData: FontAwesomeIcons.award,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
@@ -161,7 +170,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: statusC,
                       hint: "Availabel",
                       label: "Status",
-                      iconData: Icon(FontAwesomeIcons.certificate),
+                      iconData: FontAwesomeIcons.certificate,
                       keyboard: TextInputType.text,
                       inputAct: TextInputAction.next,
                     ),
@@ -169,7 +178,7 @@ class _ManagePageState extends State<ManagePage> {
                       cont: priceC,
                       hint: "350.000",
                       label: "Price",
-                      iconData: Icon(FontAwesomeIcons.rupiahSign),
+                      iconData: FontAwesomeIcons.rupiahSign,
                       keyboard: TextInputType.number,
                       inputAct: TextInputAction.done,
                     ),
@@ -180,7 +189,10 @@ class _ManagePageState extends State<ManagePage> {
                       ),
                       child: Row(
                         children: [
-                          Icon(FontAwesomeIcons.image),
+                          Icon(
+                            FontAwesomeIcons.image,
+                            color: color1,
+                          ),
                           SizedBox(
                             width: 15,
                           ),
@@ -228,9 +240,9 @@ class _ManagePageState extends State<ManagePage> {
                       color: color1,
                       textColor: colorW,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Text(
-                        "Tambah Data",
+                        "Upload",
                         style: GoogleFonts.montserrat(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

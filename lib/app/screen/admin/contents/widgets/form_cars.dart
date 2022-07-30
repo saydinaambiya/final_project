@@ -15,7 +15,7 @@ class FormCars extends StatelessWidget {
   final TextEditingController cont;
   final String hint;
   final String label;
-  final Icon iconData;
+  final IconData iconData;
   final TextInputType keyboard;
   final TextInputAction inputAct;
 
@@ -28,7 +28,10 @@ class FormCars extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         labelText: label,
-        icon: iconData,
+        icon: Icon(
+          iconData,
+          color: color1,
+        ),
         enabledBorder: InputBorder.none,
       ),
     );

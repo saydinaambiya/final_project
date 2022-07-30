@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({
+    required this.onTapped,
     required this.text1,
     required this.text2,
     required this.iconData,
@@ -12,6 +13,7 @@ class SearchButton extends StatelessWidget {
   final String text1;
   final String text2;
   final IconData iconData;
+  final void Function() onTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class SearchButton extends StatelessWidget {
             IconButton(
               alignment: Alignment.centerRight,
               icon: Icon(iconData),
-              onPressed: () {},
+              onPressed: onTapped,
             ),
           ],
         ),

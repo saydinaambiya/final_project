@@ -7,11 +7,11 @@ class TextConstants {
     fontWeight: FontWeight.w500,
   );
   static TextStyle carName = GoogleFonts.montserrat(
-      fontSize: 28, fontWeight: FontWeight.w400, color: Colors.white);
+      fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black);
   static TextStyle producedDate = GoogleFonts.montserrat(
     fontSize: 18,
     fontWeight: FontWeight.w500,
-    color: Colors.white,
+    color: Colors.black,
   );
 
   static TextStyle darkCarName = GoogleFonts.montserrat(

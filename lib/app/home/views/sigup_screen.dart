@@ -159,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
                 onPressed: () {
                   signUp(emailC.text, passwC.text);
                 },
-                color: Colors.grey,
+                color: color1,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
@@ -182,7 +182,7 @@ class _SignupPageState extends State<SignupPage> {
 
   void showNotif(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: color4, content: Text(message.toString())));
+        SnackBar(backgroundColor: color1, content: Text(message.toString())));
   }
 
   void signUp(String email, String password) async {

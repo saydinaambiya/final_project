@@ -46,13 +46,25 @@ class DropButton extends StatelessWidget {
                           ],
                         ),
                         BreakLine(),
-                        TextModal(text: "Semua Transaksi"),
+                        TextModal(
+                          text: "Semua Transaksi",
+                          tap: () {},
+                        ),
                         BreakLine(),
-                        TextModal(text: "Belum Dibayar"),
+                        TextModal(
+                          text: "Belum Dibayar",
+                          tap: () {},
+                        ),
                         BreakLine(),
-                        TextModal(text: "Dibatalkan"),
+                        TextModal(
+                          text: "Dibatalkan",
+                          tap: () {},
+                        ),
                         BreakLine(),
-                        TextModal(text: "Selesai"),
+                        TextModal(
+                          text: "Selesai",
+                          tap: () {},
+                        ),
                         BreakLine(),
                       ],
                     );

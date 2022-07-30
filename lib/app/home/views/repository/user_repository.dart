@@ -7,6 +7,7 @@ class UserRepositoty {
         .collection('users')
         .where('email', isEqualTo: email)
         .get();
+    // ignore: unnecessary_null_comparison
     if (query.docs == null) {
       return UserModelView();
     } else {

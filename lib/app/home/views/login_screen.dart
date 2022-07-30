@@ -74,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         children: <Widget>[
                           TextFormField(
+                            cursorColor: color1,
                             controller: emailC,
                             validator: validEmail,
                             keyboardType: TextInputType.emailAddress,
@@ -111,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () async {
                           if (_key.currentState!.validate()) {
                             try {
-                              _user
+                              await _user
                                   .getDataUser(emailC.text, passwC.text)
                                   .then((value) {
                                 if (value != null) {
@@ -122,13 +123,12 @@ class _LoginPageState extends State<LoginPage> {
                                           builder: (context) => RoutePage()));
                                 }
                               });
-                              // errorMessage = '';
                             } on FirebaseAuthException catch (e) {
-                              showNotif(context, e.message.toString());
+                              showNotif(context, e.toString());
                             }
                           }
                         },
-                        color: Colors.grey,
+                        color: color1,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
@@ -195,6 +195,10 @@ String? validPass(String? passwC) {
 }
 
 void showNotif(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(backgroundColor: color4, content: Text(message.toString())));
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: color1,
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+      )));
 }

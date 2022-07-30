@@ -29,13 +29,25 @@ Future<dynamic> modalPopup(BuildContext context) {
               ],
             ),
             BreakLine(),
-            TextModal(text: "Lihat Invoice"),
+            TextModal(
+              text: "Download Invoice",
+              tap: () {},
+            ),
             BreakLine(),
-            TextModal(text: "Batalkan Pesanan"),
+            TextModal(
+              text: "Batalkan Pesanan",
+              tap: () {},
+            ),
             BreakLine(),
-            TextModal(text: "Pesan Lagi"),
+            TextModal(
+              text: "Pesan Lagi",
+              tap: () {},
+            ),
             BreakLine(),
-            TextModal(text: "Hubungi"),
+            TextModal(
+              text: "Hubungi",
+              tap: () {},
+            ),
             BreakLine(),
           ],
         );

@@ -7,6 +7,7 @@ class FirebaseApi {
       final ref = FirebaseStorage.instance.ref(destination);
 
       return ref.putFile(file);
+      // ignore: unused_catch_clause
     } on FirebaseException catch (e) {
       return null;
     }

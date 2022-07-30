@@ -1,336 +1,700 @@
+import 'package:car_rental_ui/app/home/views/cars_recom.dart';
+import 'package:car_rental_ui/app/home/views/home_screen.dart';
+import 'package:car_rental_ui/app/home/views/login_screen.dart';
+import 'package:car_rental_ui/app/screen/user/user_history.dart';
+import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:car_rental_ui/constants/text_constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'book_cars.dart';
+import 'package:intl/intl.dart';
 
 class DetailCars extends StatefulWidget {
-  const DetailCars({Key? key}) : super(key: key);
+  final String carId;
+  final String imageUrl;
+  final String name;
+  final String year;
+  final String price;
+  final String seaters;
+  final String transmition;
+  final String fuel;
+
+  DetailCars({
+    Key? key,
+    required this.carId,
+    required this.imageUrl,
+    required this.name,
+    required this.year,
+    required this.price,
+    required this.seaters,
+    required this.transmition,
+    required this.fuel,
+  }) : super(key: key);
 
   @override
-  _DetailCarsState createState() => _DetailCarsState();
+  _DetailCarsState createState() => _DetailCarsState(
+        carId,
+        imageUrl,
+        name,
+        year,
+        price,
+        seaters,
+        transmition,
+        fuel,
+      );
 }
 
 class _DetailCarsState extends State<DetailCars> {
+  // var date1 = DateTime.parse(datepickC.text);
+  // var date2 = DateTime.parse(datereturnC.text);
+  //   var diff = date2.difference(date1).inDays;
+
+  //controller
+  TextEditingController nameC = TextEditingController();
+  TextEditingController datepickC = TextEditingController();
+  TextEditingController datereturnC = TextEditingController();
+  TextEditingController phoneC = TextEditingController();
+  TextEditingController addressC = TextEditingController();
+
+  String _carId;
+  String _imageUrl;
+  String _name;
+  String _year;
+  String _price;
+  String _seaters;
+  String _transmition;
+  String _fuel;
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  String? dropdownvalue;
+  var items = [
+    'Cash on Delivery',
+    'QRIS Payment',
+  ];
+
+  bool isChecked = false;
+
+  DateTime dateTime = DateTime.now();
+
+  _selectDatePick() async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2025));
+
+    if (picked != null) {
+      dateTime = picked;
+      setState(() {
+        datepickC.text = DateFormat("yyyy-MM-dd").format(dateTime);
+        dateInput = datepickC.text;
+      });
+    }
+  }
+
+  _selectDateReturn() async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2025));
+
+    if (picked != null) {
+      dateTime = picked;
+      setState(() {
+        datereturnC.text = DateFormat("yyyy-MM-dd").format(dateTime);
+        dueDate = datereturnC.text;
+      });
+    }
+  }
+
+  String dateInput = DateTime.now().toString();
+  String dueDate = DateTime.now().toString();
+
+  _DetailCarsState(
+    this._carId,
+    this._imageUrl,
+    this._name,
+    this._year,
+    this._price,
+    this._seaters,
+    this._transmition,
+    this._fuel,
+  );
   @override
   Widget build(BuildContext context) {
+    DateTime createDateInput = DateTime.parse(dateInput);
+    DateTime dueDateTime = DateTime.parse(dueDate);
+    Duration duration = dueDateTime.difference(createDateInput);
+
+    int harga = int.parse(_price);
+    int hari = int.parse('${duration.inDays}');
+    int totalharga = harga * hari;
+
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: Colors.black87,
-          title: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              FontAwesomeIcons.angleLeft,
-              color: Colors.white60,
-              size: 30,
-            ),
-          ),
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TopMenuAndShowcase(),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(20, 15, 0, 10),
-              child: Text(
-                "Specifications",
-                style: TextConstants.titleSection,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                height: 350,
+                decoration: BoxDecoration(
+                  color: colorW,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      spreadRadius: 0.5,
+                      blurRadius: 5,
+                    )
+                  ],
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(50),
+                    bottomLeft: Radius.circular(50),
+                  ),
+                ),
+                child: Stack(
                   children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      decoration: BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(
-                              "assets/icons/ic_speedometer.png",
-                              height: 30,
-                              width: 30,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                children: const <TextSpan>[
-                                  TextSpan(text: 'Manual'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                    Positioned(
+                      top: 70,
+                      right: 20,
+                      left: 20,
+                      bottom: 0,
+                      child: Image.network(
+                        _imageUrl,
+                        width: 300,
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      decoration: BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RotatedBox(
-                              quarterTurns: 1,
-                              child: Image.asset(
-                                "assets/icons/ic_cartopview.png",
-                                height: 30,
-                                width: 30,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300,
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      left: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 20, 20, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  icon: Icon(FontAwesomeIcons.chevronLeft),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
                                 ),
-                                children: const <TextSpan>[
-                                  TextSpan(text: '7 Seaters'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      decoration: BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RotatedBox(
-                              quarterTurns: 1,
-                              child: Image.asset(
-                                "assets/icons/ic_cartopview.png",
-                                height: 30,
-                                width: 30,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300,
+                                SizedBox(
+                                  width: 10,
                                 ),
-                                children: const <TextSpan>[
-                                  TextSpan(text: 'Bensin'),
-                                ],
-                              ),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        _name,
+                                        style: TextConstants.carName,
+                                      ),
+                                      Text(
+                                        _year,
+                                        style: TextConstants.producedDate,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-        bottomSheet: PriceAndBookNow(),
-      ),
-    );
-  }
-}
-
-class PriceAndBookNow extends StatelessWidget {
-  const PriceAndBookNow({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            margin: EdgeInsets.only(left: 30),
-            child: RichText(
-              text: TextSpan(
-                style: GoogleFonts.montserrat(
-                    fontSize: 17,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500),
-                children: const <TextSpan>[
-                  TextSpan(text: '\Rp 350.000 '),
-                  TextSpan(
-                      text: '/ Hari', style: TextStyle(color: Colors.black38)),
-                ],
+              SizedBox(
+                height: 5,
               ),
-            ),
-          ),
-          Container(
-            width: 170,
-            height: 60,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => BookCars()));
-              },
-              child: Text(
-                "Book now",
-                style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.w400, fontSize: 18),
-              ),
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                shape: new RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                  ),
+              Container(
+                margin: EdgeInsets.fromLTRB(20, 15, 0, 10),
+                child: Text(
+                  "Specifications",
+                  style: TextConstants.titleSection,
                 ),
               ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class TopMenuAndShowcase extends StatelessWidget {
-  const TopMenuAndShowcase({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 350,
-      decoration: BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.only(
-          bottomRight: Radius.circular(50),
-          bottomLeft: Radius.circular(50),
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 70,
-            right: 20,
-            left: 20,
-            bottom: 0,
-            child: Image.asset(
-              "assets/images/avanza.png",
-              width: 300,
-            ),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            left: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(15, 0, 18, 0),
+              Container(
+                width: double.infinity,
+                height: 100,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: EdgeInsets.symmetric(horizontal: 40),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 7,
-                                spreadRadius: 0.5)
-                          ],
-                        ),
-                        child: Image.asset(
-                          "assets/logos/toyota.png",
-                          width: 25,
-                          height: 25,
+                            color: color1,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 0.5,
+                                blurRadius: 4,
+                              )
+                            ]),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/icons/ic_speedometer.png",
+                                height: 30,
+                                width: 30,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: _transmition),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Toyota Veloz",
-                              style: TextConstants.carName,
-                            ),
-                            Text(
-                              "2022",
-                              style: TextConstants.producedDate,
-                            ),
-                          ],
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: EdgeInsets.symmetric(horizontal: 30),
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 0.5,
+                                blurRadius: 4,
+                              )
+                            ],
+                            color: color1,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RotatedBox(
+                                quarterTurns: 1,
+                                child: Image.asset(
+                                  "assets/icons/ic_cartopview.png",
+                                  height: 30,
+                                  width: 30,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: '$_seaters Seater'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.orange,
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 0.5,
+                                blurRadius: 4,
+                              )
+                            ],
+                            color: color1,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RotatedBox(
+                                quarterTurns: 1,
+                                child: Image.asset(
+                                  "assets/icons/ic_cartopview.png",
+                                  height: 30,
+                                  width: 30,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: _fuel),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "4.8",
-                            style: GoogleFonts.montserrat(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      )
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: colorW,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 5,
+                        spreadRadius: 0.5,
+                      )
+                    ]),
+                child: Column(
+                  children: [
+                    inputData(FontAwesomeIcons.solidUser, "Nama Pelanggan",
+                        TextInputType.name, nameC),
+                    // inputData(
+                    //     FontAwesomeIcons.calendarDays,
+                    //     "Tanggal Pengambilan",
+                    //     TextInputType.datetime,
+                    //     datepickC),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.calendarDays,
+                            color: color1,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              onTap: _selectDatePick,
+                              // initialValue: "2022-07-20 12:00:00",
+                              readOnly: true,
+                              controller: datepickC,
+                              textInputAction: TextInputAction.next,
+                              // keyboardType: ,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Tanggal Pengambilan",
+                                hintStyle: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.calendarDays,
+                            color: color1,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              onTap: _selectDateReturn,
+                              // initialValue: "2022-07-20 12:00:00",
+
+                              readOnly: true,
+
+                              controller: datereturnC,
+                              textInputAction: TextInputAction.next,
+                              // keyboardType: ,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Tanggal Pengembalian",
+                                hintStyle: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    // inputData(
+                    //     FontAwesomeIcons.calendarDays,
+                    //     "Tanggal Pengembalian",
+                    //     TextInputType.datetime,
+                    //     datereturnC),
+                    inputData(FontAwesomeIcons.phone, "Nomor HP",
+                        TextInputType.phone, phoneC),
+                    inputData(FontAwesomeIcons.locationDot, "Alamat Pelanggan",
+                        TextInputType.streetAddress, addressC),
+                    Row(
+                      children: [
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                        Icon(
+                          FontAwesomeIcons.wallet,
+                          color: color1,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        DropdownButton(
+                            hint: Text(
+                              "Pilih Pembayaran",
+                              style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            value: dropdownvalue,
+                            icon: Icon(Icons.keyboard_arrow_down),
+                            items: items.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(items),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownvalue = newValue!;
+                              });
+                            }),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          checkColor: Colors.white,
+                          fillColor: MaterialStateProperty.all(Colors.blue),
+                          value: isChecked,
+                          shape: CircleBorder(),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isChecked = value!;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          width: 0,
+                        ),
+                        Text(
+                          "Menyetujui Syarat dan Ketentuan",
+                          style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 100,
+              )
+            ],
           ),
-        ],
+        ),
+        bottomSheet: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 30),
+                child: RichText(
+                  text: TextSpan(
+                    style: GoogleFonts.montserrat(
+                        fontSize: 17,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Total : ',
+                      ),
+                      TextSpan(
+                        text: NumberFormat.currency(
+                                locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+                            .format(totalharga),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: 170,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (isChecked == true) {
+                      User? user = auth.currentUser;
+                      final uid = user?.uid;
+                      String id =
+                          DateFormat('yyyyMMdd-HHmmss').format(dateTime);
+
+                      final trans = Trans(
+                          tid: '',
+                          idTrans: 'CHR$id',
+                          cid: _carId,
+                          uid: uid!,
+                          carName: _name,
+                          custName: nameC.text,
+                          datePick: datepickC.text,
+                          dateReturn: datereturnC.text,
+                          phone: int.parse(phoneC.text),
+                          address: addressC.text,
+                          payment: dropdownvalue.toString(),
+                          price: _price,
+                          imageUrl: _imageUrl,
+                          status: 'Diproses');
+                      createTrans(trans);
+
+                      showNotif(context, "Mobil Berhasil di Pesan");
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => HomeScreen()));
+                    } else {
+                      showNotif(
+                          context, "Wajib Menyetujui Syarat dan Ketentuan");
+                    }
+                  },
+                  child: Text(
+                    "Book now",
+                    style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: color1,
+                    elevation: 0,
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
+}
+
+Widget inputData(IconData icon, String text, TextInputType keyboard,
+    TextEditingController dataC) {
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+    child: Row(
+      children: [
+        Icon(
+          icon,
+          color: color1,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: TextFormField(
+            controller: dataC,
+            textInputAction: TextInputAction.next,
+            keyboardType: keyboard,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: text,
+              hintStyle: GoogleFonts.montserrat(fontWeight: FontWeight.normal),
+            ),
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Future createTrans(Trans trans) async {
+  final docTrans = FirebaseFirestore.instance.collection('trans').doc();
+  trans.tid = docTrans.id;
+
+  final json = trans.toJson();
+  await docTrans.set(json);
+}
+
+class Trans {
+  String tid;
+  String idTrans;
+  String uid;
+  String cid;
+  String carName;
+  String custName;
+  String datePick;
+  String dateReturn;
+  int phone;
+  String address;
+  String payment;
+  String price;
+  String imageUrl;
+  String status;
+
+  Trans({
+    this.tid = '',
+    this.idTrans = '',
+    required this.uid,
+    required this.cid,
+    required this.carName,
+    required this.custName,
+    required this.datePick,
+    required this.dateReturn,
+    required this.phone,
+    required this.address,
+    required this.payment,
+    required this.price,
+    this.imageUrl = '',
+    this.status = '',
+  });
+
+  Map<String, dynamic> toJson() => {
+        'tid': tid,
+        'idTrans': idTrans,
+        'uid': uid,
+        'cid': cid,
+        'carName': carName,
+        'custName': custName,
+        'datePick': datePick,
+        'dateReturn': dateReturn,
+        'phone': phone,
+        'address': address,
+        'payment': payment,
+        'price': price,
+        'imageUrl': imageUrl,
+        'status': status,
+      };
 }
