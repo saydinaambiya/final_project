@@ -28,24 +28,27 @@ class HomeContent extends StatelessWidget {
             ),
             BrandList(),
             Container(
-              margin: EdgeInsets.only(left: 10, right: 10),
+              // margin: EdgeInsets.only(left: 10, right: 10),
               child: Column(
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Available Cars",
-                        style: TextConstants.titleSection,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          print("filter cars");
-                        },
-                        icon: Icon(FontAwesomeIcons.list),
-                      )
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Available Cars",
+                          style: TextConstants.titleSection,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            print("filter cars");
+                          },
+                          icon: Icon(FontAwesomeIcons.list),
+                        )
+                      ],
+                    ),
                   ),
                   StreamBuilder<List<Cars>>(
                       stream: readCars(),
@@ -84,6 +87,7 @@ class HomeContent extends StatelessWidget {
         carSeater: '${car.seater}',
         carTransmition: car.transmition,
         carBrand: car.brand,
+        carPlat: car.nopol,
       );
 
   Stream<List<Cars>> readCars() => FirebaseFirestore.instance

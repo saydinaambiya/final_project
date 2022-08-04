@@ -2,6 +2,7 @@ import 'package:car_rental_ui/app/screen/admin/contents/admin_content.dart';
 import 'package:car_rental_ui/app/screen/admin/contents/manage_content.dart';
 import 'package:car_rental_ui/app/screen/admin/contents/profile_content.dart';
 import 'package:car_rental_ui/app/screen/admin/contents/transaction_content.dart';
+import 'package:car_rental_ui/app/screen/user/user_profile.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,7 +21,7 @@ class _AdminPageState extends State<AdminPage> {
     AdminHome(),
     ManagePage(),
     TransAdminPage(),
-    ProfileAdminPage()
+    ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class _AdminPageState extends State<AdminPage> {
                     label: "Home"),
                 NavigationDestination(
                     icon: Icon(
-                      FontAwesomeIcons.car,
+                      FontAwesomeIcons.plus,
                       color: colorW,
                     ),
                     label: "Cars"),

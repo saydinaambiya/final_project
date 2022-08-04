@@ -1,15 +1,20 @@
-import 'package:car_rental_ui/app/home/views/cars_recom.dart';
+import 'dart:io';
+import 'dart:math';
+
 import 'package:car_rental_ui/app/home/views/home_screen.dart';
 import 'package:car_rental_ui/app/home/views/login_screen.dart';
-import 'package:car_rental_ui/app/screen/user/user_history.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:car_rental_ui/constants/text_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:car_rental_ui/app/screen/admin/api/firebase_api.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 
 class DetailCars extends StatefulWidget {
   final String carId;
@@ -20,6 +25,7 @@ class DetailCars extends StatefulWidget {
   final String seaters;
   final String transmition;
   final String fuel;
+  final String nopol;
 
   DetailCars({
     Key? key,
@@ -31,6 +37,7 @@ class DetailCars extends StatefulWidget {
     required this.seaters,
     required this.transmition,
     required this.fuel,
+    required this.nopol,
   }) : super(key: key);
 
   @override
@@ -43,13 +50,46 @@ class DetailCars extends StatefulWidget {
         seaters,
         transmition,
         fuel,
+        nopol,
       );
 }
 
 class _DetailCarsState extends State<DetailCars> {
-  // var date1 = DateTime.parse(datepickC.text);
-  // var date2 = DateTime.parse(datereturnC.text);
-  //   var diff = date2.difference(date1).inDays;
+  //var uploadTransfer===========================
+  File? file;
+  UploadTask? task;
+  String? transImage;
+  //=============================================
+
+  //select image
+  Future pickImage() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) return;
+    final path = result.files.single.path!;
+
+    setState(() {
+      file = File(path);
+    });
+  }
+
+  //upload image
+  Future uploadImage() async {
+    if (file == null) return;
+
+    final fileName = basename(file!.path);
+    final destination = 'transfer/$fileName';
+
+    task = FirebaseApi.uploadFile(destination, file!);
+
+    if (task == null) return;
+
+    final snapshot = await task!.whenComplete(() {});
+    final urlFile = await snapshot.ref.getDownloadURL();
+    setState(() {
+      transImage = urlFile;
+    });
+  }
 
   //controller
   TextEditingController nameC = TextEditingController();
@@ -66,22 +106,24 @@ class _DetailCarsState extends State<DetailCars> {
   String _seaters;
   String _transmition;
   String _fuel;
+  String _nopol;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   String? dropdownvalue;
   var items = [
     'Cash on Delivery',
-    'QRIS Payment',
+    'Transfer Bank',
   ];
 
   bool isChecked = false;
 
   DateTime dateTime = DateTime.now();
+  Random random = new Random();
 
   _selectDatePick() async {
     final DateTime? picked = await showDatePicker(
-        context: context,
+        context: this.context,
         initialDate: dateTime,
         firstDate: DateTime.now(),
         lastDate: DateTime(2025));
@@ -97,7 +139,7 @@ class _DetailCarsState extends State<DetailCars> {
 
   _selectDateReturn() async {
     final DateTime? picked = await showDatePicker(
-        context: context,
+        context: this.context,
         initialDate: dateTime,
         firstDate: DateTime.now(),
         lastDate: DateTime(2025));
@@ -123,6 +165,7 @@ class _DetailCarsState extends State<DetailCars> {
     this._seaters,
     this._transmition,
     this._fuel,
+    this._nopol,
   );
   @override
   Widget build(BuildContext context) {
@@ -199,11 +242,14 @@ class _DetailCarsState extends State<DetailCars> {
                                       Text(
                                         _name,
                                         style: TextConstants.carName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      Text(
-                                        _year,
-                                        style: TextConstants.producedDate,
-                                      ),
+                                      // Text(
+                                      //   _year,
+                                      //   style: TextConstants.producedDate,
+                                      //   overflow: TextOverflow.ellipsis,
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -267,6 +313,47 @@ class _DetailCarsState extends State<DetailCars> {
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(text: _transmition),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        decoration: BoxDecoration(
+                            color: color1,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                spreadRadius: 0.5,
+                                blurRadius: 4,
+                              )
+                            ]),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/icons/ic_speedometer.png",
+                                height: 30,
+                                width: 30,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: _year),
                                   ],
                                 ),
                               ),
@@ -493,29 +580,123 @@ class _DetailCarsState extends State<DetailCars> {
                             }),
                       ],
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          checkColor: Colors.white,
-                          fillColor: MaterialStateProperty.all(Colors.blue),
-                          value: isChecked,
-                          shape: CircleBorder(),
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isChecked = value!;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 0,
-                        ),
-                        Text(
-                          "Menyetujui Syarat dan Ketentuan",
-                          style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.bold, fontSize: 14),
-                        )
-                      ],
-                    )
+                    dropdownvalue == 'Transfer Bank'
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, bottom: 10, top: 10),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.buildingColumns,
+                                      color: color1,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "BSI SYARIAH",
+                                      style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, bottom: 10, top: 10),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.moneyCheckDollar,
+                                      color: color1,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "7980966544",
+                                      style: GoogleFonts.montserrat(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      child: file != null
+                                          ? Text(basename(file!.path),
+                                              style: GoogleFonts.montserrat(
+                                                  color: color1,
+                                                  fontWeight: FontWeight.bold))
+                                          : Text(
+                                              "Upload Bukti Transfer",
+                                              style: GoogleFonts.montserrat(
+                                                  color: color1,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                      onTap: () => {
+                                        pickImage(),
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    checkColor: Colors.white,
+                                    fillColor:
+                                        MaterialStateProperty.all(Colors.blue),
+                                    value: isChecked,
+                                    shape: CircleBorder(),
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isChecked = value!;
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 0,
+                                  ),
+                                  Text(
+                                    "Menyetujui Syarat dan Ketentuan",
+                                    style: GoogleFonts.montserrat(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
+                                  )
+                                ],
+                              )
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Checkbox(
+                                checkColor: Colors.white,
+                                fillColor:
+                                    MaterialStateProperty.all(Colors.blue),
+                                value: isChecked,
+                                shape: CircleBorder(),
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    isChecked = value!;
+                                  });
+                                },
+                              ),
+                              SizedBox(
+                                width: 0,
+                              ),
+                              Text(
+                                "Menyetujui Syarat dan Ketentuan",
+                                style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.bold, fontSize: 14),
+                              )
+                            ],
+                          )
                   ],
                 ),
               ),
@@ -551,19 +732,20 @@ class _DetailCarsState extends State<DetailCars> {
                 ),
               ),
               Container(
-                width: 170,
+                width: 150,
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () async {
                     if (isChecked == true) {
                       User? user = auth.currentUser;
                       final uid = user?.uid;
-                      String id =
-                          DateFormat('yyyyMMdd-HHmmss').format(dateTime);
+                      String id = DateFormat('MMdd').format(dateTime);
+                      int randomInt = random.nextInt(1000);
 
+                      await uploadImage();
                       final trans = Trans(
                           tid: '',
-                          idTrans: 'CHR$id',
+                          idTrans: 'CHR$id$randomInt',
                           cid: _carId,
                           uid: uid!,
                           carName: _name,
@@ -573,10 +755,16 @@ class _DetailCarsState extends State<DetailCars> {
                           phone: int.parse(phoneC.text),
                           address: addressC.text,
                           payment: dropdownvalue.toString(),
-                          price: _price,
+                          price: totalharga.toString(),
+                          nopol: _nopol,
                           imageUrl: _imageUrl,
-                          status: 'Diproses');
+                          status: 'Diproses',
+                          buktiTrans: '$transImage');
                       createTrans(trans);
+                      final docCar = FirebaseFirestore.instance
+                          .collection('cars')
+                          .doc(_carId);
+                      docCar.update({'status': 'Used'});
 
                       showNotif(context, "Mobil Berhasil di Pesan");
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -663,6 +851,8 @@ class Trans {
   String price;
   String imageUrl;
   String status;
+  String nopol;
+  String buktiTrans;
 
   Trans({
     this.tid = '',
@@ -679,6 +869,8 @@ class Trans {
     required this.price,
     this.imageUrl = '',
     this.status = '',
+    required this.nopol,
+    this.buktiTrans = '',
   });
 
   Map<String, dynamic> toJson() => {
@@ -696,5 +888,26 @@ class Trans {
         'price': price,
         'imageUrl': imageUrl,
         'status': status,
+        'nopol': nopol,
+        'buktiTrans': buktiTrans,
       };
+
+  static Trans fromJson(Map<String, dynamic> json) => Trans(
+        cid: json['cid'],
+        uid: json['uid'],
+        tid: json['tid'],
+        carName: json['carName'],
+        custName: json['custName'],
+        address: json['address'],
+        datePick: json['datePick'],
+        dateReturn: json['dateReturn'],
+        nopol: json['nopol'],
+        payment: json['payment'],
+        phone: json['phone'],
+        price: json['price'],
+        idTrans: json['idTrans'],
+        imageUrl: json['imageUrl'],
+        status: json['status'],
+        buktiTrans: json['buktiTrans'],
+      );
 }

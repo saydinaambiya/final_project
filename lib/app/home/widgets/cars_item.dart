@@ -3,6 +3,7 @@ import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 var size, height, width;
 
@@ -17,6 +18,7 @@ class CarItem extends StatelessWidget {
     required this.carSeater,
     required this.carTransmition,
     required this.carBrand,
+    required this.carPlat,
     Key? key,
   }) : super(key: key);
 
@@ -29,6 +31,7 @@ class CarItem extends StatelessWidget {
   final String carTransmition;
   final String carFuel;
   final String carBrand;
+  final String carPlat;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,11 @@ class CarItem extends StatelessWidget {
         bottom: 10,
         right: 20,
       ),
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: EdgeInsets.only(
+        left: 10,
+        right: 10,
+        bottom: 10,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -59,7 +66,7 @@ class CarItem extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 170,
+            width: 150,
             height: 180,
             child: Image.network(
               imageLink,
@@ -69,7 +76,7 @@ class CarItem extends StatelessWidget {
           Spacer(),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
                 carName,
@@ -91,9 +98,14 @@ class CarItem extends StatelessWidget {
                       color: Colors.black,
                       fontWeight: FontWeight.w500),
                   children: <TextSpan>[
-                    TextSpan(text: 'Rp. $carPrice'),
                     TextSpan(
-                        text: '/ Hari',
+                        text: NumberFormat.currency(
+                      locale: 'id',
+                      symbol: 'Rp ',
+                      decimalDigits: 0,
+                    ).format(int.parse(carPrice))),
+                    TextSpan(
+                        text: ' / Hari',
                         style: TextStyle(color: Colors.black38)),
                   ],
                 ),
@@ -124,6 +136,7 @@ class CarItem extends StatelessWidget {
                             price: carPrice,
                             seaters: carSeater,
                             transmition: carTransmition,
+                            nopol: carPlat,
                           )));
                 },
               )

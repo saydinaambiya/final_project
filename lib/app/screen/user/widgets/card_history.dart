@@ -1,6 +1,10 @@
+import 'package:car_rental_ui/app/home/views/home_screen.dart';
+import 'package:car_rental_ui/app/home/views/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'modal_popup.dart';
 
 var size, height, width;
@@ -11,6 +15,9 @@ class CardHistory extends StatefulWidget {
   final String numTrans;
   final String carTotPrice;
   final String transStat;
+  final String carDate;
+  final String tid;
+  final String cid;
 
   CardHistory({
     required this.carImage,
@@ -18,6 +25,9 @@ class CardHistory extends StatefulWidget {
     required this.numTrans,
     required this.carTotPrice,
     required this.transStat,
+    required this.carDate,
+    required this.tid,
+    required this.cid,
     Key? key,
   }) : super(key: key);
 
@@ -28,6 +38,9 @@ class CardHistory extends StatefulWidget {
         numTrans,
         carTotPrice,
         transStat,
+        carDate,
+        tid,
+        cid,
       );
 }
 
@@ -37,13 +50,19 @@ class _CardHistoryState extends State<CardHistory> {
   String _numTrans;
   String _carTotPrice;
   String _transStat;
+  String _carDate;
+  String _tid;
+  String _cid;
 
   _CardHistoryState(
     this._carImage,
     this._carName,
-    this._carTotPrice,
     this._numTrans,
+    this._carTotPrice,
     this._transStat,
+    this._carDate,
+    this._tid,
+    this._cid,
   );
   @override
   Widget build(BuildContext context) {
@@ -93,23 +112,37 @@ class _CardHistoryState extends State<CardHistory> {
                   ),
                 ),
                 Text(
-                  _numTrans,
+                  NumberFormat.currency(
+                    locale: 'id',
+                    symbol: 'Rp ',
+                    decimalDigits: 0,
+                  ).format(int.parse(_carTotPrice)),
                   style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.normal, fontSize: 12),
                 ),
                 Text(
-                  _carTotPrice,
+                  _numTrans,
                   style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.bold, fontSize: 13),
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                Text(
+                  _carDate,
+                  style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.normal, fontSize: 12),
                 ),
                 Container(
                   margin: EdgeInsets.only(
                     top: 5,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.green[400],
-                  ),
+                  decoration: _transStat == "Selesai"
+                      ? BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.green[400],
+                        )
+                      : BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.amber[400],
+                        ),
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Text(
@@ -129,7 +162,97 @@ class _CardHistoryState extends State<CardHistory> {
             child: IconButton(
               icon: Icon(FontAwesomeIcons.ellipsisVertical),
               onPressed: () {
-                modalPopup(context);
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    context: context,
+                    builder: (context) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(FontAwesomeIcons.xmark),
+                              ),
+                              Text(
+                                "Lainnya",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Download Invoice",
+                            tap: () {
+                              Navigator.pop(context);
+                              showNotif(context, "Coming Soon!");
+                            },
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Batalkan Pesanan",
+                            tap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text('Batalkan Pesanan'),
+                                        content: Text('Anda Yakin ?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('No'),
+                                          ),
+                                          TextButton(
+                                              onPressed: () {
+                                                final docTrans =
+                                                    FirebaseFirestore.instance
+                                                        .collection('trans')
+                                                        .doc(_tid);
+                                                docTrans.update(
+                                                    {'status': "Dibatalkan"});
+                                                final docCar = FirebaseFirestore
+                                                    .instance
+                                                    .collection('cars')
+                                                    .doc(_cid);
+                                                docCar.update(
+                                                    {'status': "Available"});
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HomeScreen()));
+                                              },
+                                              child: Text('Yes'))
+                                        ],
+                                      ));
+                            },
+                          ),
+                          BreakLine(),
+                          // TextModal(
+                          //   text: "Pesan Lagi",
+                          //   tap: () {},
+                          // ),
+                          // BreakLine(),
+                          TextModal(
+                            text: "Hubungi",
+                            tap: () {
+                              Navigator.pop(context);
+                              showNotif(context, "Coming Soon!");
+                            },
+                          ),
+                          BreakLine(),
+                        ],
+                      );
+                    });
               },
             ),
           )

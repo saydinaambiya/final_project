@@ -16,95 +16,101 @@ class _UserHistoryState extends State<UserHistory> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          SearchButton(
-            text1: "Transactions",
-            text2: "",
-            iconData: FontAwesomeIcons.noteSticky,
-            onTapped: () {
-              showModalBottomSheet(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  context: context,
-                  builder: (context) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              icon: Icon(FontAwesomeIcons.xmark),
-                            ),
-                            Text(
-                              "Semua Transaksi",
-                              style: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SearchButton(
+              text1: "Transactions",
+              text2: "",
+              iconData: FontAwesomeIcons.noteSticky,
+              onTapped: () {
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    context: context,
+                    builder: (context) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(FontAwesomeIcons.xmark),
                               ),
-                            ),
-                          ],
-                        ),
-                        BreakLine(),
-                        TextModal(
-                          text: "Semua Transaksi",
-                          tap: () {},
-                        ),
-                        BreakLine(),
-                        TextModal(
-                          text: "Belum Dibayar",
-                          tap: () {},
-                        ),
-                        BreakLine(),
-                        TextModal(
-                          text: "Dibatalkan",
-                          tap: () {},
-                        ),
-                        BreakLine(),
-                        TextModal(
-                          text: "Selesai",
-                          tap: () {},
-                        ),
-                        BreakLine(),
-                      ],
-                    );
-                  });
-            },
-          ),
-          StreamBuilder<List<Trans>>(
-            stream: readTrans(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              } else if (snapshot.hasData) {
-                final trans = snapshot.data!;
+                              Text(
+                                "Semua Transaksi",
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Semua Transaksi",
+                            tap: () {},
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Belum Dibayar",
+                            tap: () {},
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Dibatalkan",
+                            tap: () {},
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Selesai",
+                            tap: () {},
+                          ),
+                          BreakLine(),
+                        ],
+                      );
+                    });
+              },
+            ),
+            StreamBuilder<List<Trans>>(
+              stream: readTrans(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final trans = snapshot.data!;
 
-                return ListBody(
-                  children: trans.map(buildTrans).toList(),
-                );
-              } else if (snapshot.data == null) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return Text("Please Wait");
-              }
-            },
-          ),
-        ],
+                  return ListBody(
+                    children: trans.map(buildTrans).toList(),
+                  );
+                } else if (snapshot.data == null) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Text("Please Wait");
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget buildTrans(Trans trans) => CardHistory(
-      carImage: trans.imageUrl,
-      carName: trans.carName,
-      numTrans: trans.idTrans,
-      carTotPrice: trans.price,
-      transStat: trans.status);
+        carImage: trans.imageUrl,
+        carName: trans.carName,
+        carDate: trans.datePick,
+        numTrans: trans.idTrans,
+        carTotPrice: trans.price,
+        transStat: trans.status,
+        tid: trans.tid,
+        cid: trans.cid,
+      );
 
   // Widget buildTrans(Trans trans) => ListTile(
   //       leading: Text(trans.carName),

@@ -1,12 +1,15 @@
 import 'package:car_rental_ui/constants/color_constans.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 var size, height, width;
 
 class CardItem extends StatelessWidget {
   const CardItem({
+    required this.cid,
     required this.imageURl,
     required this.carName,
     required this.carBrand,
@@ -16,9 +19,12 @@ class CardItem extends StatelessWidget {
     required this.nopol,
     required this.seater,
     required this.transmition,
+    required this.status,
+    required this.recomend,
     Key? key,
   }) : super(key: key);
 
+  final String cid;
   final String imageURl;
   final String carName;
   final String carBrand;
@@ -28,6 +34,8 @@ class CardItem extends StatelessWidget {
   final String nopol;
   final String seater;
   final String transmition;
+  final String status;
+  final String recomend;
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +122,15 @@ class CardItem extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                // SizedBox(
-                                //   width: 40,
-                                // ),
+                                SizedBox(
+                                  width: 50,
+                                ),
                                 Text(
-                                  "Rp. $price/Hari",
+                                  NumberFormat.currency(
+                                    locale: 'id',
+                                    symbol: 'Rp ',
+                                    decimalDigits: 0,
+                                  ).format(int.parse(price)),
                                   style: GoogleFonts.montserrat(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -209,7 +221,16 @@ class CardItem extends StatelessWidget {
                         fontWeight: FontWeight.normal, fontSize: 12),
                   ),
                   Text(
-                    'Rp. $price',
+                    nopol,
+                    style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.normal, fontSize: 12),
+                  ),
+                  Text(
+                    NumberFormat.currency(
+                      locale: 'id',
+                      symbol: 'Rp ',
+                      decimalDigits: 0,
+                    ).format(int.parse(price)),
                     style: GoogleFonts.montserrat(
                         fontWeight: FontWeight.bold, fontSize: 13),
                   ),
@@ -234,16 +255,64 @@ class CardItem extends StatelessWidget {
                           children: [
                             HeaderSettings(),
                             DividSettings(),
+                            status == 'Used'
+                                ? TextSettings(
+                                    textcontent: "Mobil Tersedia",
+                                    press: () {
+                                      final docCar = FirebaseFirestore.instance
+                                          .collection('cars')
+                                          .doc(cid);
+                                      docCar.update({'status': 'Available'});
+                                      Navigator.of(context).pop();
+                                    })
+                                : TextSettings(
+                                    textcontent: "Mobil Dipakai",
+                                    press: () {
+                                      final docCar = FirebaseFirestore.instance
+                                          .collection('cars')
+                                          .doc(cid);
+                                      docCar.update({'status': 'Used'});
+                                      Navigator.of(context).pop();
+                                    }),
+                            DividSettings(),
                             TextSettings(
                               press: () {
+                                final docCar = FirebaseFirestore.instance
+                                    .collection('cars')
+                                    .doc(cid);
+                                docCar.update({'recomend': 'Yes'});
                                 Navigator.of(context).pop();
                               },
-                              textcontent: "Update Mobil",
+                              textcontent: "Rekomendasikan Mobil",
                             ),
                             DividSettings(),
                             TextSettings(
                               press: () {
-                                Navigator.of(context).pop();
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text('Hapus Mobil'),
+                                          content: Text('Anda Yakin ?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('No'),
+                                            ),
+                                            TextButton(
+                                                onPressed: () {
+                                                  final docCar =
+                                                      FirebaseFirestore.instance
+                                                          .collection('cars')
+                                                          .doc(cid);
+                                                  docCar.delete();
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('Yes'))
+                                          ],
+                                        ));
                               },
                               textcontent: "Hapus Mobil",
                             ),

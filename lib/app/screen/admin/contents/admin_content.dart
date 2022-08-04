@@ -1,4 +1,5 @@
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'model/cars_model.dart';
 import 'package:car_rental_ui/app/screen/admin/contents/widgets/card_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,6 +28,57 @@ class _AdminHomeState extends State<AdminHome> {
               print("Iya udah ditekan");
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, bottom: 20),
+            child: Row(
+              children: [
+                Text(
+                  "Mobil Rekomendasi",
+                  style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          //StreamRecommend
+          StreamBuilder<List<Cars>>(
+              stream: recomCars(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong! ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final cars = snapshot.data!;
+
+                  return ListBody(
+                    children: cars.map(buildCar).toList(),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              bottom: 20,
+              top: 20,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "Mobil Tersedia",
+                  style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          //StreamAvailable
           StreamBuilder<List<Cars>>(
               stream: readCars(),
               builder: (context, snapshot) {
@@ -43,7 +95,39 @@ class _AdminHomeState extends State<AdminHome> {
                     child: CircularProgressIndicator(),
                   );
                 }
-              })
+              }),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, bottom: 20, top: 20),
+            child: Row(
+              children: [
+                Text(
+                  "Mobil Sedang Digunakan",
+                  style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          //StreamUsed
+          StreamBuilder<List<Cars>>(
+              stream: usedCars(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong! ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final cars = snapshot.data!;
+
+                  return ListBody(
+                    children: cars.map(buildCar).toList(),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
         ]),
       ),
     ));
@@ -56,6 +140,7 @@ class _AdminHomeState extends State<AdminHome> {
   //     );
 
   Widget buildCar(Cars car) => CardItem(
+        cid: car.cid,
         imageURl: car.imageUrl,
         carName: car.carName,
         carYear: '${car.year}',
@@ -65,11 +150,28 @@ class _AdminHomeState extends State<AdminHome> {
         nopol: car.nopol,
         seater: '${car.seater}',
         transmition: car.transmition,
+        status: car.status,
+        recomend: car.recomend,
       );
 
   Stream<List<Cars>> readCars() => FirebaseFirestore.instance
       .collection('cars')
-      // .where('status', isEqualTo: 'Available')
+      .where('status', isEqualTo: 'Available')
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Cars.fromJson(doc.data())).toList());
+
+  Stream<List<Cars>> usedCars() => FirebaseFirestore.instance
+      .collection('cars')
+      .where('status', isEqualTo: 'Used')
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Cars.fromJson(doc.data())).toList());
+
+  Stream<List<Cars>> recomCars() => FirebaseFirestore.instance
+      .collection('cars')
+      .where('status', isEqualTo: 'Available')
+      .where('recomend', isEqualTo: 'Yes')
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Cars.fromJson(doc.data())).toList());
