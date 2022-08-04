@@ -32,16 +32,7 @@ class _CarsRecomState extends State<CarsRecom> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Expanded(
-                  //   child: ListView.builder(
-                  //     itemCount: 5,
-                  //     itemBuilder: (context, index) {
-                  //       return CarItem(,);
-                  //     },
-                  //   ),
-                  // )
-                ],
+                children: [],
               ),
             ),
           ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
 import 'package:car_rental_ui/app/screen/detail_cars/detail_cars.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
@@ -11,6 +13,8 @@ import 'package:intl/intl.dart';
 import 'widgets/card_item.dart';
 
 var size, height, width;
+
+List<List<String>> itemList = [];
 
 class TransAdminPage extends StatefulWidget {
   const TransAdminPage({Key? key}) : super(key: key);
@@ -35,6 +39,24 @@ class _TransAdminPageState extends State<TransAdminPage> {
   //   super.dispose();
   // }
 
+  Stream<QuerySnapshot> streamQuery = FirebaseFirestore.instance
+      .collection('trans')
+      .where('status', isEqualTo: "Selesai")
+      .snapshots();
+
+  @override
+  void initState() {
+    super.initState();
+    itemList = [
+      <String>[
+        "Nama Mobil (Nopol)",
+        "Tanggal Pesan",
+        "Jumlah Hari",
+        "Jumlah Harga"
+      ]
+    ];
+  }
+
   @override
   Widget build(BuildContext context) => DefaultTabController(
       length: 2,
@@ -47,7 +69,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
                 text2: "History",
                 iconData: FontAwesomeIcons.fileArrowDown,
                 onTapped: () {
-                  // String csvData = ListToCsvConverter().convert(con);
+                  generateCSV();
                 },
               ),
               // SizedBox(
@@ -97,25 +119,62 @@ class _TransAdminPageState extends State<TransAdminPage> {
                           );
                         }
                       }),
-                  //Selesai TabView
-                  StreamBuilder<List<Trans>>(
-                      stream: conTrans(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text(
-                              'Something went wrong! ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          final cars = snapshot.data!;
+                  StreamBuilder<QuerySnapshot>(
+                    stream: streamQuery,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot doc = snapshot.data!.docs[index];
 
-                          return ListView(
-                            children: cars.map(showTrans).toList(),
-                          );
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      }),
+                              itemList.add(<String>[
+                                '${doc.get('carName')}(${doc.get('nopol')})',
+                                doc.get('datePick'),
+                                doc.get('dateReturn'),
+                                doc.get('price'),
+                              ]);
+                              return ActionCard(
+                                  carName: doc.get('carName'),
+                                  carPlat: doc.get('nopol'),
+                                  cusName: doc.get('custName'),
+                                  cusPhone: int.parse(
+                                      '${doc.get('phone').toString()}'),
+                                  idTrans: doc.get('idTrans'),
+                                  totPrice: doc.get('price'),
+                                  tranStat: doc.get('status'),
+                                  trasPay: doc.get('payment'),
+                                  tid: doc.get('tid'),
+                                  cid: doc.get('cid'),
+                                  nopol: doc.get('nopol'));
+                            });
+                      }
+                    },
+                  )
+
+                  //Selesai TabView
+                  // StreamBuilder<List<Trans>>(
+                  //     stream: conTrans(),
+                  //     builder: (context, snapshot) {
+                  //       if (snapshot.hasError) {
+                  //         return Text(
+                  //             'Something went wrong! ${snapshot.error}');
+                  //       } else if (snapshot.hasData) {
+                  //         final cars = snapshot.data!;
+                  //         itemList.add(['${}']);
+                  //         return ListView(
+                  //           children: cars.map(showTrans).toList(),
+                  //         );
+                  //       } else {
+                  //         return Center(
+                  //           child: CircularProgressIndicator(),
+                  //         );
+                  //       }
+                  //     }),
                 ]),
               ),
             ],
@@ -123,7 +182,22 @@ class _TransAdminPageState extends State<TransAdminPage> {
         ),
       ));
 
-  //retreive data
+  generateCSV() async {
+    print('button is pressed');
+
+    String csvData = ListToCsvConverter().convert(itemList);
+    DateTime now = DateTime.now();
+    String formatDate = DateFormat('HHmmss').format(now);
+
+    Directory downloadDir = Directory('storage/emulated/0/Download');
+
+    // final File file =
+    //     await (File('${downloadDir.path}/item_export$formatDate.csv').create());
+
+    // await file.writeAsString(csvData);
+    print(itemList);
+  }
+
   Widget showTrans(Trans trans) => ActionCard(
         carName: trans.carName,
         carPlat: trans.nopol,
@@ -135,6 +209,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
         trasPay: trans.payment,
         tid: trans.tid,
         cid: trans.cid,
+        nopol: trans.nopol,
       );
 
   Stream<List<Trans>> unconTrans() => FirebaseFirestore.instance
@@ -153,7 +228,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
           snapshot.docs.map((doc) => Trans.fromJson(doc.data())).toList());
 }
 
-class ActionCard extends StatelessWidget {
+class ActionCard extends StatefulWidget {
   const ActionCard({
     required this.carName,
     required this.carPlat,
@@ -165,6 +240,7 @@ class ActionCard extends StatelessWidget {
     required this.trasPay,
     required this.tid,
     required this.cid,
+    required this.nopol,
     Key? key,
   }) : super(key: key);
 
@@ -178,6 +254,51 @@ class ActionCard extends StatelessWidget {
   final String trasPay;
   final String tid;
   final String cid;
+  final String nopol;
+
+  @override
+  State<ActionCard> createState() => _ActionCardState(
+        carName,
+        carPlat,
+        tranStat,
+        cusName,
+        cusPhone,
+        idTrans,
+        totPrice,
+        trasPay,
+        tid,
+        cid,
+        nopol,
+      );
+}
+
+class _ActionCardState extends State<ActionCard> {
+  final String _carName;
+  final String _carPlat;
+  final String _tranStat;
+  final String _cusName;
+  final int _cusPhone;
+  final String _idTrans;
+  final String _totPrice;
+  final String _trasPay;
+  final String _tid;
+  final String _cid;
+  final String _nopol;
+
+  _ActionCardState(
+    this._carName,
+    this._carPlat,
+    this._tranStat,
+    this._cusName,
+    this._cusPhone,
+    this._idTrans,
+    this._totPrice,
+    this._trasPay,
+    this._tid,
+    this._cid,
+    this._nopol,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -205,12 +326,12 @@ class ActionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      carName,
+                      _carName,
                       style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(
-                      carPlat,
+                      _carPlat,
                       style: GoogleFonts.montserrat(),
                     ),
                   ],
@@ -219,22 +340,22 @@ class ActionCard extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          color: tranStat == "Diproses"
+                          color: _tranStat == "Diproses"
                               ? Colors.amber[100]
                               : color3,
                           borderRadius: BorderRadius.all(Radius.circular(5))),
                       height: 30,
                       width: 70,
                       child: Center(
-                          child: tranStat == "Diproses"
+                          child: _tranStat == "Diproses"
                               ? Text(
-                                  tranStat,
+                                  widget.tranStat,
                                   style: GoogleFonts.montserrat(
                                       color: Colors.amber,
                                       fontWeight: FontWeight.bold),
                                 )
                               : Text(
-                                  tranStat,
+                                  _tranStat,
                                   style: GoogleFonts.montserrat(
                                       color: color1,
                                       fontWeight: FontWeight.bold),
@@ -277,7 +398,8 @@ class ActionCard extends StatelessWidget {
                                                                     .instance
                                                                     .collection(
                                                                         'trans')
-                                                                    .doc(tid);
+                                                                    .doc(widget
+                                                                        .tid);
                                                             docTrans.update({
                                                               'status':
                                                                   'Selesai'
@@ -316,7 +438,8 @@ class ActionCard extends StatelessWidget {
                                                                   .instance
                                                                   .collection(
                                                                       'trans')
-                                                                  .doc(tid);
+                                                                  .doc(widget
+                                                                      .tid);
                                                           docTrans.update({
                                                             'status':
                                                                 'Dibatalkan'
@@ -326,7 +449,8 @@ class ActionCard extends StatelessWidget {
                                                                   .instance
                                                                   .collection(
                                                                       'cars')
-                                                                  .doc(cid);
+                                                                  .doc(widget
+                                                                      .cid);
                                                           docCar.update({
                                                             'status':
                                                                 'Available'
@@ -343,7 +467,7 @@ class ActionCard extends StatelessWidget {
                                       textcontent: "Batalkan",
                                     ),
                                     DividSettings(),
-                                    trasPay == 'Transfer Bank'
+                                    widget.trasPay == 'Transfer Bank'
                                         ? Column(
                                             children: [
                                               TextSettings(
@@ -381,20 +505,20 @@ class ActionCard extends StatelessWidget {
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text(
-                      cusName,
+                      widget.cusName,
                       style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(
-                      '0$cusPhone',
+                      '0${widget.cusPhone}',
                       style: GoogleFonts.montserrat(),
                     ),
                     Text(
-                      idTrans,
+                      widget.idTrans,
                       style: GoogleFonts.montserrat(),
                     ),
                     Text(
-                      trasPay,
+                      widget.trasPay,
                       style: GoogleFonts.montserrat(),
                     ),
                   ],
@@ -411,7 +535,7 @@ class ActionCard extends StatelessWidget {
                       Text(
                         NumberFormat.currency(
                                 locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-                            .format(int.parse(totPrice)),
+                            .format(int.parse(widget.totPrice)),
                         style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
