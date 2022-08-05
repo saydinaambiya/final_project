@@ -1,3 +1,4 @@
+import 'package:car_rental_ui/app/home/views/login_screen.dart';
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'model/cars_model.dart';
@@ -25,9 +26,10 @@ class _AdminHomeState extends State<AdminHome> {
             text2: ' Rental',
             iconData: FontAwesomeIcons.list,
             onTapped: () {
-              print("Iya udah ditekan");
+              showNotif(context, "Coming Soon");
             },
           ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20, bottom: 20),
             child: Row(
@@ -48,9 +50,24 @@ class _AdminHomeState extends State<AdminHome> {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Something went wrong! ${snapshot.error}');
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Mobil Rekomendasi tidak Tersedia",
+                          style: GoogleFonts.montserrat(),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (snapshot.hasData) {
                   final cars = snapshot.data!;
-
                   return ListBody(
                     children: cars.map(buildCar).toList(),
                   );

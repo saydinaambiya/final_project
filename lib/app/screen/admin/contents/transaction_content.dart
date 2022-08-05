@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:car_rental_ui/app/home/views/login_screen.dart';
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
 import 'package:car_rental_ui/app/screen/detail_cars/detail_cars.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets/card_item.dart';
 
@@ -24,21 +26,7 @@ class TransAdminPage extends StatefulWidget {
 }
 
 class _TransAdminPageState extends State<TransAdminPage> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _tabController = TabController(
-  //     vsync: this,
-  //     length: myTabs.length,
-  //   );
-  // }
-
-  // @override
-  // void dispose() {
-  //   _tabController.dispose();
-  //   super.dispose();
-  // }
-
+  //Selesai Stream v.2
   Stream<QuerySnapshot> streamQuery = FirebaseFirestore.instance
       .collection('trans')
       .where('status', isEqualTo: "Selesai")
@@ -59,7 +47,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
 
   @override
   Widget build(BuildContext context) => DefaultTabController(
-      length: 2,
+      length: 4,
       child: SafeArea(
         child: Scaffold(
           body: Column(
@@ -72,41 +60,82 @@ class _TransAdminPageState extends State<TransAdminPage> {
                   generateCSV();
                 },
               ),
-              // SizedBox(
-              //   height: 50,
-              // ),
+              //Tab Container
               Container(
                 height: 60,
                 child: TabBar(
                     indicatorColor: color1,
                     labelColor: Colors.black,
                     unselectedLabelColor: Colors.grey,
-                    unselectedLabelStyle:
-                        GoogleFonts.montserrat(fontWeight: FontWeight.normal),
-                    labelStyle:
-                        GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+                    unselectedLabelStyle: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 11,
+                    ),
+                    labelStyle: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                    ),
                     tabs: [
+                      //Diproses tab
                       Tab(
                         icon: Icon(FontAwesomeIcons.clockRotateLeft),
-                        text: "Perlu Tindakan",
+                        // text: "Diproses",
                       ),
+                      //Dibatalkan tab
+                      Tab(
+                        icon: Icon(FontAwesomeIcons.circleXmark),
+                        // text: "Dibatalkan",
+                      ),
+                      //Dikonfimasi tab
                       Tab(
                         icon: Icon(FontAwesomeIcons.circleCheck),
-                        text: "Selesai",
+                        // text: "Dikonfirmasi",
+                      ),
+                      //Selesai tab
+                      Tab(
+                        icon: Icon(FontAwesomeIcons.clipboard),
+                        // text: "Selesai",
                       )
                     ]),
               ),
+              //Tabview Container
               Container(
                 width: double.maxFinite,
                 height: 500,
                 child: TabBarView(children: [
-                  //Perlu tindakan tabview
+                  //Diproses tabview
                   StreamBuilder<List<Trans>>(
                       stream: unconTrans(),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
                           return Text(
                               'Something went wrong! ${snapshot.error}');
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Image.network(
+                                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                ),
+                                Text(
+                                  'Belum ada transaksi',
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.bold,
+                                    color: color1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         } else if (snapshot.hasData) {
                           final cars = snapshot.data!;
 
@@ -119,12 +148,124 @@ class _TransAdminPageState extends State<TransAdminPage> {
                           );
                         }
                       }),
+                  //Dibatalkan tabview
+                  StreamBuilder<List<Trans>>(
+                      stream: cancTrans(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                              'Something went wrong! ${snapshot.error}');
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Image.network(
+                                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                ),
+                                Text(
+                                  'Belum ada transaksi',
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.bold,
+                                    color: color1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (snapshot.hasData) {
+                          final cars = snapshot.data!;
+
+                          return ListView(
+                            children: cars.map(showTrans).toList(),
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                  //Dikonfirmasi tabview
+                  StreamBuilder<List<Trans>>(
+                      stream: accTrans(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                              'Something went wrong! ${snapshot.error}');
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Image.network(
+                                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                ),
+                                Text(
+                                  'Belum ada transaksi',
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.bold,
+                                    color: color1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (snapshot.hasData) {
+                          final cars = snapshot.data!;
+
+                          return ListView(
+                            children: cars.map(showTrans).toList(),
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                  //Selesai Tabview v.2
                   StreamBuilder<QuerySnapshot>(
                     stream: streamQuery,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.data!.docs.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 200,
+                                width: 200,
+                                child: Image.network(
+                                    'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                              ),
+                              Text(
+                                'Belum ada transaksi',
+                                style: GoogleFonts.montserrat(
+                                  fontWeight: FontWeight.bold,
+                                  color: color1,
+                                ),
+                              ),
+                            ],
+                          ),
                         );
                       } else {
                         return ListView.builder(
@@ -139,42 +280,24 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                 doc.get('price'),
                               ]);
                               return ActionCard(
-                                  carName: doc.get('carName'),
-                                  carPlat: doc.get('nopol'),
-                                  cusName: doc.get('custName'),
-                                  cusPhone: int.parse(
-                                      '${doc.get('phone').toString()}'),
-                                  idTrans: doc.get('idTrans'),
-                                  totPrice: doc.get('price'),
-                                  tranStat: doc.get('status'),
-                                  trasPay: doc.get('payment'),
-                                  tid: doc.get('tid'),
-                                  cid: doc.get('cid'),
-                                  nopol: doc.get('nopol'));
+                                carName: doc.get('carName'),
+                                carPlat: doc.get('nopol'),
+                                cusName: doc.get('custName'),
+                                cusPhone:
+                                    int.parse('${doc.get('phone').toString()}'),
+                                idTrans: doc.get('idTrans'),
+                                totPrice: doc.get('price'),
+                                tranStat: doc.get('status'),
+                                trasPay: doc.get('payment'),
+                                tid: doc.get('tid'),
+                                cid: doc.get('cid'),
+                                nopol: doc.get('nopol'),
+                                buktiTrans: doc.get('buktiTrans'),
+                              );
                             });
                       }
                     },
                   )
-
-                  //Selesai TabView
-                  // StreamBuilder<List<Trans>>(
-                  //     stream: conTrans(),
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasError) {
-                  //         return Text(
-                  //             'Something went wrong! ${snapshot.error}');
-                  //       } else if (snapshot.hasData) {
-                  //         final cars = snapshot.data!;
-                  //         itemList.add(['${}']);
-                  //         return ListView(
-                  //           children: cars.map(showTrans).toList(),
-                  //         );
-                  //       } else {
-                  //         return Center(
-                  //           child: CircularProgressIndicator(),
-                  //         );
-                  //       }
-                  //     }),
                 ]),
               ),
             ],
@@ -182,6 +305,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
         ),
       ));
 
+  //Function CSV
   generateCSV() async {
     print('button is pressed');
 
@@ -191,11 +315,11 @@ class _TransAdminPageState extends State<TransAdminPage> {
 
     Directory downloadDir = Directory('storage/emulated/0/Download');
 
-    // final File file =
-    //     await (File('${downloadDir.path}/item_export$formatDate.csv').create());
+    final File file =
+        await (File('${downloadDir.path}/item_export$formatDate.csv').create());
 
-    // await file.writeAsString(csvData);
-    print(itemList);
+    await file.writeAsString(csvData);
+    showNotif(context, "$file Downloaded");
   }
 
   Widget showTrans(Trans trans) => ActionCard(
@@ -210,8 +334,10 @@ class _TransAdminPageState extends State<TransAdminPage> {
         tid: trans.tid,
         cid: trans.cid,
         nopol: trans.nopol,
+        buktiTrans: trans.buktiTrans,
       );
 
+  //Proses Stream
   Stream<List<Trans>> unconTrans() => FirebaseFirestore.instance
       .collection('trans')
       .where('status', isEqualTo: "Diproses")
@@ -219,6 +345,21 @@ class _TransAdminPageState extends State<TransAdminPage> {
       .map((snapshot) =>
           snapshot.docs.map((doc) => Trans.fromJson(doc.data())).toList());
 
+  //Dibatalkan Stream
+  Stream<List<Trans>> cancTrans() => FirebaseFirestore.instance
+      .collection('trans')
+      .where('status', isEqualTo: "Dibatalkan")
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Trans.fromJson(doc.data())).toList());
+  //Dikonfirmasi Stream
+  Stream<List<Trans>> accTrans() => FirebaseFirestore.instance
+      .collection('trans')
+      .where('status', isEqualTo: "Dikonfirmasi")
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Trans.fromJson(doc.data())).toList());
+  //Selesai Stream
   Stream<List<Trans>> conTrans() => FirebaseFirestore.instance
       .collection('trans')
       .where('status', isEqualTo: "Selesai")
@@ -241,6 +382,7 @@ class ActionCard extends StatefulWidget {
     required this.tid,
     required this.cid,
     required this.nopol,
+    required this.buktiTrans,
     Key? key,
   }) : super(key: key);
 
@@ -255,6 +397,7 @@ class ActionCard extends StatefulWidget {
   final String tid;
   final String cid;
   final String nopol;
+  final String buktiTrans;
 
   @override
   State<ActionCard> createState() => _ActionCardState(
@@ -269,6 +412,7 @@ class ActionCard extends StatefulWidget {
         tid,
         cid,
         nopol,
+        buktiTrans,
       );
 }
 
@@ -284,6 +428,7 @@ class _ActionCardState extends State<ActionCard> {
   final String _tid;
   final String _cid;
   final String _nopol;
+  final String buktiTrans;
 
   _ActionCardState(
     this._carName,
@@ -297,6 +442,7 @@ class _ActionCardState extends State<ActionCard> {
     this._tid,
     this._cid,
     this._nopol,
+    this.buktiTrans,
   );
 
   @override
@@ -340,14 +486,16 @@ class _ActionCardState extends State<ActionCard> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          color: _tranStat == "Diproses"
+                          color: _tranStat == "Diproses" ||
+                                  _tranStat == "Dibatalkan"
                               ? Colors.amber[100]
                               : color3,
                           borderRadius: BorderRadius.all(Radius.circular(5))),
                       height: 30,
-                      width: 70,
+                      width: 100,
                       child: Center(
-                          child: _tranStat == "Diproses"
+                          child: _tranStat == "Diproses" ||
+                                  _tranStat == "Dibatalkan"
                               ? Text(
                                   widget.tranStat,
                                   style: GoogleFonts.montserrat(
@@ -471,7 +619,17 @@ class _ActionCardState extends State<ActionCard> {
                                         ? Column(
                                             children: [
                                               TextSettings(
-                                                press: () {},
+                                                press: () async {
+                                                  final Uri url =
+                                                      Uri.parse('$buktiTrans');
+
+                                                  if (!await launchUrl(url,
+                                                      mode: LaunchMode
+                                                          .inAppWebView)) {
+                                                    throw 'Could not launch $url';
+                                                  }
+                                                  Navigator.pop(context);
+                                                },
                                                 textcontent:
                                                     "Lihat Bukti Transfer",
                                               ),
