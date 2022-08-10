@@ -147,6 +147,10 @@ class CardItem extends StatelessWidget {
                       child: Row(
                         children: [
                           SpecBox(
+                              linkImage:
+                                  'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Flicense-plate.png?alt=media&token=3e8f696c-a61f-4ddd-be7a-370bbde318ee',
+                              boxText: nopol),
+                          SpecBox(
                             boxText: transmition,
                             linkImage:
                                 'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fsettings.png?alt=media&token=1bf064f4-5335-41ce-81bc-ffad53c76646',
@@ -161,10 +165,6 @@ class CardItem extends StatelessWidget {
                             linkImage:
                                 'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fcar-seat.png?alt=media&token=65bc929e-844a-438d-aef1-6eeb88047b01',
                           ),
-                          SpecBox(
-                              linkImage:
-                                  'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Flicense-plate.png?alt=media&token=3e8f696c-a61f-4ddd-be7a-370bbde318ee',
-                              boxText: nopol)
                         ],
                       ),
                     ),
@@ -275,16 +275,26 @@ class CardItem extends StatelessWidget {
                                       Navigator.of(context).pop();
                                     }),
                             DividSettings(),
-                            TextSettings(
-                              press: () {
-                                final docCar = FirebaseFirestore.instance
-                                    .collection('cars')
-                                    .doc(cid);
-                                docCar.update({'recomend': 'Yes'});
-                                Navigator.of(context).pop();
-                              },
-                              textcontent: "Rekomendasikan Mobil",
-                            ),
+                            recomend == 'Yes'
+                                ? TextSettings(
+                                    textcontent: "Batalkan Rekomendasi",
+                                    press: () {
+                                      final docCar = FirebaseFirestore.instance
+                                          .collection('cars')
+                                          .doc(cid);
+                                      docCar.update({'recomend': 'No'});
+                                      Navigator.of(context).pop();
+                                    })
+                                : TextSettings(
+                                    press: () {
+                                      final docCar = FirebaseFirestore.instance
+                                          .collection('cars')
+                                          .doc(cid);
+                                      docCar.update({'recomend': 'Yes'});
+                                      Navigator.of(context).pop();
+                                    },
+                                    textcontent: "Rekomendasikan Mobil",
+                                  ),
                             DividSettings(),
                             TextSettings(
                               press: () {

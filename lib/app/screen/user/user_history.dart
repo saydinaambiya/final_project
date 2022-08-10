@@ -1,16 +1,19 @@
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
-import 'package:car_rental_ui/app/screen/admin/contents/transaction_content.dart';
+import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'widgets/card_history.dart';
 
 class UserHistory extends StatefulWidget {
   @override
   State<UserHistory> createState() => _UserHistoryState();
 }
+
+String status = "Selesai";
 
 class _UserHistoryState extends State<UserHistory> {
   @override
@@ -22,7 +25,7 @@ class _UserHistoryState extends State<UserHistory> {
             SearchButton(
               text1: "Transactions",
               text2: "",
-              iconData: FontAwesomeIcons.noteSticky,
+              iconData: FontAwesomeIcons.list,
               onTapped: () {
                 showModalBottomSheet(
                     shape: RoundedRectangleBorder(
@@ -41,7 +44,7 @@ class _UserHistoryState extends State<UserHistory> {
                                 icon: Icon(FontAwesomeIcons.xmark),
                               ),
                               Text(
-                                "Semua Transaksi",
+                                "Filter Transaksi",
                                 style: GoogleFonts.montserrat(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
@@ -51,23 +54,43 @@ class _UserHistoryState extends State<UserHistory> {
                           ),
                           BreakLine(),
                           TextModal(
-                            text: "Semua Transaksi",
-                            tap: () {},
-                          ),
-                          BreakLine(),
-                          TextModal(
-                            text: "Belum Dibayar",
-                            tap: () {},
+                            text: "Dikonfirmasi",
+                            tap: () {
+                              setState(() {
+                                status = "Dikonfirmasi";
+                              });
+                              Navigator.pop(context);
+                            },
                           ),
                           BreakLine(),
                           TextModal(
                             text: "Dibatalkan",
-                            tap: () {},
+                            tap: () {
+                              setState(() {
+                                status = "Dibatalkan";
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          BreakLine(),
+                          TextModal(
+                            text: "Diproses",
+                            tap: () {
+                              setState(() {
+                                status = "Diproses";
+                              });
+                              Navigator.pop(context);
+                            },
                           ),
                           BreakLine(),
                           TextModal(
                             text: "Selesai",
-                            tap: () {},
+                            tap: () {
+                              setState(() {
+                                status = "Selesai";
+                                Navigator.pop(context);
+                              });
+                            },
                           ),
                           BreakLine(),
                         ],
@@ -78,8 +101,39 @@ class _UserHistoryState extends State<UserHistory> {
             StreamBuilder<List<Trans>>(
               stream: readTrans(),
               builder: (context, snapshot) {
-                if (snapshot.hasError) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
+                } else if (snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 100,
+                        ),
+                        SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: Lottie.network(
+                              'https://assets5.lottiefiles.com/packages/lf20_ralbmkvl.json'),
+                        ),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        Text(
+                          'Belum ada transaksi',
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.bold,
+                            color: color1,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (snapshot.hasData) {
                   final trans = snapshot.data!;
 
@@ -112,15 +166,10 @@ class _UserHistoryState extends State<UserHistory> {
         cid: trans.cid,
       );
 
-  // Widget buildTrans(Trans trans) => ListTile(
-  //       leading: Text(trans.carName),
-  //       title: Text(trans.idTrans),
-  //       subtitle: Text(trans.datePick),
-  //     );
-
   Stream<List<Trans>> readTrans() => FirebaseFirestore.instance
       .collection('trans')
       .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .where('status', isEqualTo: status)
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => Trans.fromJson(doc.data())).toList());

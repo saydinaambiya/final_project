@@ -296,8 +296,9 @@ class _DetailCarsState extends State<DetailCars> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Image.asset(
-                                "assets/icons/ic_speedometer.png",
+                              Image.network(
+                                'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fsettings.png?alt=media&token=1bf064f4-5335-41ce-81bc-ffad53c76646',
+                                color: colorW,
                                 height: 30,
                                 width: 30,
                               ),
@@ -337,8 +338,9 @@ class _DetailCarsState extends State<DetailCars> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Image.asset(
-                                "assets/icons/ic_speedometer.png",
+                              Image.network(
+                                "https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fcalendar.png?alt=media&token=96bde948-e891-4ba0-9bf7-5a12dedb0cb6",
+                                color: colorW,
                                 height: 30,
                                 width: 30,
                               ),
@@ -379,9 +381,10 @@ class _DetailCarsState extends State<DetailCars> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               RotatedBox(
-                                quarterTurns: 1,
-                                child: Image.asset(
-                                  "assets/icons/ic_cartopview.png",
+                                quarterTurns: 0,
+                                child: Image.network(
+                                  "https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Ffuel.png?alt=media&token=9c47c495-7164-4a5b-b265-7cee472716da",
+                                  color: colorW,
                                   height: 30,
                                   width: 30,
                                 ),
@@ -397,7 +400,7 @@ class _DetailCarsState extends State<DetailCars> {
                                     fontWeight: FontWeight.w300,
                                   ),
                                   children: <TextSpan>[
-                                    TextSpan(text: '$_seaters Seater'),
+                                    TextSpan(text: '$_fuel'),
                                   ],
                                 ),
                               ),
@@ -423,9 +426,10 @@ class _DetailCarsState extends State<DetailCars> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               RotatedBox(
-                                quarterTurns: 1,
-                                child: Image.asset(
-                                  "assets/icons/ic_cartopview.png",
+                                quarterTurns: 0,
+                                child: Image.network(
+                                  "https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fcar-seat.png?alt=media&token=65bc929e-844a-438d-aef1-6eeb88047b01",
+                                  color: colorW,
                                   height: 30,
                                   width: 30,
                                 ),
@@ -441,7 +445,7 @@ class _DetailCarsState extends State<DetailCars> {
                                     fontWeight: FontWeight.w300,
                                   ),
                                   children: <TextSpan>[
-                                    TextSpan(text: _fuel),
+                                    TextSpan(text: '$_seaters Seaters'),
                                   ],
                                 ),
                               ),

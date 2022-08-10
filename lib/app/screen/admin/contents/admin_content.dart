@@ -30,20 +30,6 @@ class _AdminHomeState extends State<AdminHome> {
             },
           ),
 
-          Padding(
-            padding: const EdgeInsets.only(left: 20, bottom: 20),
-            child: Row(
-              children: [
-                Text(
-                  "Mobil Rekomendasi",
-                  style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-          ),
           //StreamRecommend
           StreamBuilder<List<Cars>>(
               stream: recomCars(),
@@ -56,20 +42,41 @@ class _AdminHomeState extends State<AdminHome> {
                     child: CircularProgressIndicator(),
                   );
                 } else if (snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Mobil Rekomendasi tidak Tersedia",
-                          style: GoogleFonts.montserrat(),
-                        ),
-                      ],
-                    ),
+                  return SizedBox(
+                    height: 0,
                   );
+                  // return Center(
+                  //   child: Column(
+                  //     children: [
+                  //       Text(
+                  //         "Mobil Rekomendasi tidak Tersedia",
+                  //         style: GoogleFonts.montserrat(),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // );
                 } else if (snapshot.hasData) {
                   final cars = snapshot.data!;
-                  return ListBody(
-                    children: cars.map(buildCar).toList(),
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, bottom: 20),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Mobil Rekomendasi",
+                              style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ListBody(
+                        children: cars.map(buildCar).toList(),
+                      ),
+                    ],
                   );
                 } else {
                   return Center(
@@ -77,35 +84,45 @@ class _AdminHomeState extends State<AdminHome> {
                   );
                 }
               }),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-              bottom: 20,
-              top: 20,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "Mobil Tersedia",
-                  style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-          ),
+
           //StreamAvailable
           StreamBuilder<List<Cars>>(
               stream: readCars(),
               builder: (context, snapshot) {
-                if (snapshot.hasError) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
                   return Text('Something went wrong! ${snapshot.error}');
+                } else if (snapshot.data!.isEmpty) {
+                  return SizedBox(
+                    height: 0,
+                  );
                 } else if (snapshot.hasData) {
                   final cars = snapshot.data!;
-
-                  return ListBody(
-                    children: cars.map(buildCar).toList(),
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          bottom: 20,
+                          top: 20,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Mobil Tersedia",
+                              style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ListBody(
+                        children: cars.map(buildCar).toList(),
+                      ),
+                    ],
                   );
                 } else {
                   return Center(

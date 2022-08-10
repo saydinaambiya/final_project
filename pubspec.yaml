@@ -10,6 +10,7 @@ dependencies:
   community_material_icon: ^5.4.55
   csv: ^5.0.1
   cupertino_icons: ^1.0.2
+  dio: ^4.0.6
   file_picker: ^4.6.1
   firebase_auth: ^3.4.1
   firebase_core: ^1.19.1
@@ -21,8 +22,11 @@ dependencies:
   get: ^4.6.5
   google_fonts: ^3.0.0
   grouped_buttons: any
+  http: ^0.13.5
   image_picker: ^0.8.5+3
   intl: ^0.17.0
+  lottie: ^1.4.1
+  provider: ^6.0.3
   url_launcher: ^6.1.5
 
 dev_dependencies:

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:car_rental_ui/app/home/views/login_screen.dart';
 import 'package:car_rental_ui/app/home/widgets/search_button.dart';
+import 'package:car_rental_ui/app/screen/admin/api/upload_api.dart';
+import 'package:car_rental_ui/app/screen/admin/contents/process_apriori.dart';
 import 'package:car_rental_ui/app/screen/detail_cars/detail_cars.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets/card_item.dart';
@@ -36,12 +39,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
   void initState() {
     super.initState();
     itemList = [
-      <String>[
-        "Nama Mobil (Nopol)",
-        "Tanggal Pesan",
-        "Jumlah Hari",
-        "Jumlah Harga"
-      ]
+      <String>["id", "item"]
     ];
   }
 
@@ -55,9 +53,38 @@ class _TransAdminPageState extends State<TransAdminPage> {
               SearchButton(
                 text1: "Transaction ",
                 text2: "History",
-                iconData: FontAwesomeIcons.fileArrowDown,
+                iconData: FontAwesomeIcons.circleArrowDown,
                 onTapped: () {
-                  generateCSV();
+                  showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20))),
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            HeaderSettings(),
+                            DividSettings(),
+                            TextSettings(
+                                textcontent: "Export Data",
+                                press: () {
+                                  generateCSV();
+                                  Navigator.pop(context);
+                                }),
+                            DividSettings(),
+                            TextSettings(
+                              press: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ProsesApriori()));
+                              },
+                              textcontent: "Generate Data Rekomendasi",
+                            ),
+                            DividSettings(),
+                          ],
+                        );
+                      });
                 },
               ),
               //Tab Container
@@ -123,8 +150,8 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                 SizedBox(
                                   height: 200,
                                   width: 200,
-                                  child: Image.network(
-                                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                  child: Lottie.network(
+                                      'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
                                 ),
                                 Text(
                                   'Belum ada transaksi',
@@ -168,8 +195,8 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                 SizedBox(
                                   height: 200,
                                   width: 200,
-                                  child: Image.network(
-                                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                  child: Lottie.network(
+                                      'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
                                 ),
                                 Text(
                                   'Belum ada transaksi',
@@ -213,8 +240,8 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                 SizedBox(
                                   height: 200,
                                   width: 200,
-                                  child: Image.network(
-                                      'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                  child: Lottie.network(
+                                      'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
                                 ),
                                 Text(
                                   'Belum ada transaksi',
@@ -254,8 +281,8 @@ class _TransAdminPageState extends State<TransAdminPage> {
                               SizedBox(
                                 height: 200,
                                 width: 200,
-                                child: Image.network(
-                                    'https://firebasestorage.googleapis.com/v0/b/final-project-b3526.appspot.com/o/icons%2Fempty-box.png?alt=media&token=ef7c00ee-6e83-4b40-b987-8d2d88d4ad88'),
+                                child: Lottie.network(
+                                    'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
                               ),
                               Text(
                                 'Belum ada transaksi',
@@ -274,10 +301,8 @@ class _TransAdminPageState extends State<TransAdminPage> {
                               DocumentSnapshot doc = snapshot.data!.docs[index];
 
                               itemList.add(<String>[
-                                '${doc.get('carName')}(${doc.get('nopol')})',
-                                doc.get('datePick'),
-                                doc.get('dateReturn'),
-                                doc.get('price'),
+                                doc.get('cid'),
+                                doc.get('nopol'),
                               ]);
                               return ActionCard(
                                 carName: doc.get('carName'),
@@ -524,47 +549,51 @@ class _ActionCardState extends State<ActionCard> {
                                     HeaderSettings(),
                                     DividSettings(),
                                     //Konfirmasi Transaksi
-                                    TextSettings(
-                                        textcontent: "Konfirmasi",
-                                        press: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                    title: Text(
-                                                        'Konfirmasi Transaksi'),
-                                                    content:
-                                                        Text('Anda Yakin ?'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {},
-                                                        child: Text('No'),
-                                                      ),
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            final docTrans =
-                                                                FirebaseFirestore
+                                    _tranStat == "Diproses"
+                                        ? TextSettings(
+                                            textcontent: "Konfirmasi",
+                                            press: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                        title: Text(
+                                                            'Konfirmasi Transaksi'),
+                                                        content: Text(
+                                                            'Anda Yakin ?'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {},
+                                                            child: Text('No'),
+                                                          ),
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                final docTrans = FirebaseFirestore
                                                                     .instance
                                                                     .collection(
                                                                         'trans')
                                                                     .doc(widget
                                                                         .tid);
-                                                            docTrans.update({
-                                                              'status':
-                                                                  'Selesai'
-                                                            });
+                                                                docTrans
+                                                                    .update({
+                                                                  'status':
+                                                                      'Selesai'
+                                                                });
 
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text('Yes'))
-                                                    ],
-                                                  ));
-                                        }),
-                                    DividSettings(),
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                              child:
+                                                                  Text('Yes'))
+                                                        ],
+                                                      ));
+                                            })
+                                        : SizedBox(),
+                                    // DividSettings(),
                                     //Batalkan Transaksi
                                     TextSettings(
                                       press: () {

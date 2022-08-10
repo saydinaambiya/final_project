@@ -73,13 +73,37 @@ class _ManagePageState extends State<ManagePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SearchButton(
-                text1: "New ",
-                text2: "Car",
-                iconData: FontAwesomeIcons.bars,
-                onTapped: () {
-                  print("Iya udah ditekan");
-                },
+              // SearchButton(
+              //   text1: "New ",
+              //   text2: "Car",
+              //   iconData: ,
+              //   onTapped: () {
+              //     print("Iya udah ditekan");
+              //   },
+              // ),
+              Container(
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.montserrat(
+                            fontSize: 24,
+                            color: Colors.black87,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: "Add ",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: "New Car"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Container(
                 decoration: BoxDecoration(
