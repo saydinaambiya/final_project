@@ -151,7 +151,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                   height: 200,
                                   width: 200,
                                   child: Lottie.network(
-                                      'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
+                                      'https://assets5.lottiefiles.com/packages/lf20_ralbmkvl.json'),
                                 ),
                                 Text(
                                   'Belum ada transaksi',
@@ -196,7 +196,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                   height: 200,
                                   width: 200,
                                   child: Lottie.network(
-                                      'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
+                                      'https://assets5.lottiefiles.com/packages/lf20_ralbmkvl.json'),
                                 ),
                                 Text(
                                   'Belum ada transaksi',
@@ -241,7 +241,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                   height: 200,
                                   width: 200,
                                   child: Lottie.network(
-                                      'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
+                                      'https://assets5.lottiefiles.com/packages/lf20_ralbmkvl.json'),
                                 ),
                                 Text(
                                   'Belum ada transaksi',
@@ -282,7 +282,7 @@ class _TransAdminPageState extends State<TransAdminPage> {
                                 height: 200,
                                 width: 200,
                                 child: Lottie.network(
-                                    'https://assets9.lottiefiles.com/packages/lf20_xzcx84wu.json'),
+                                    'https://assets5.lottiefiles.com/packages/lf20_ralbmkvl.json'),
                               ),
                               Text(
                                 'Belum ada transaksi',
