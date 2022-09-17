@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:car_rental_ui/app/home/views/welcome_screen.dart';
+import 'package:car_rental_ui/app/home/views/home_screen.dart';
 import 'package:car_rental_ui/app/route/route_page.dart';
-import 'package:car_rental_ui/constants/color_constans.dart';
+import 'package:car_rental_ui/app/screen/onboarding_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -23,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
       final uid = user?.uid;
       if (uid == null) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => WelcomePage()));
+            context, MaterialPageRoute(builder: (context) => OnboardingPage()));
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => RoutePage()));

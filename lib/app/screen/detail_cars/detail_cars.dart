@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:car_rental_ui/app/home/views/home_screen.dart';
 import 'package:car_rental_ui/app/home/views/login_screen.dart';
+import 'package:car_rental_ui/app/home/views/welcome_screen.dart';
 import 'package:car_rental_ui/constants/color_constans.dart';
 import 'package:car_rental_ui/constants/text_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -740,42 +741,68 @@ class _DetailCarsState extends State<DetailCars> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (isChecked == true) {
-                      User? user = auth.currentUser;
-                      final uid = user?.uid;
-                      String id = DateFormat('MMdd').format(dateTime);
-                      int randomInt = random.nextInt(1000);
+                    User? user = auth.currentUser;
+                    final uid = user?.uid;
+                    String id = DateFormat('MMdd').format(dateTime);
+                    int randomInt = random.nextInt(1000);
+                    if (user != null) {
+                      if (isChecked == true) {
+                        await uploadImage();
+                        final trans = Trans(
+                            tid: '',
+                            idTrans: 'CHR$id$randomInt',
+                            cid: _carId,
+                            uid: uid!,
+                            carName: _name,
+                            custName: nameC.text,
+                            datePick: datepickC.text,
+                            dateReturn: datereturnC.text,
+                            phone: int.parse(phoneC.text),
+                            address: addressC.text,
+                            payment: dropdownvalue.toString(),
+                            price: totalharga.toString(),
+                            nopol: _nopol,
+                            imageUrl: _imageUrl,
+                            status: 'Diproses',
+                            buktiTrans: '$transImage');
+                        createTrans(trans);
+                        final docCar = FirebaseFirestore.instance
+                            .collection('cars')
+                            .doc(_carId);
+                        docCar.update({'status': 'Used'});
 
-                      await uploadImage();
-                      final trans = Trans(
-                          tid: '',
-                          idTrans: 'CHR$id$randomInt',
-                          cid: _carId,
-                          uid: uid!,
-                          carName: _name,
-                          custName: nameC.text,
-                          datePick: datepickC.text,
-                          dateReturn: datereturnC.text,
-                          phone: int.parse(phoneC.text),
-                          address: addressC.text,
-                          payment: dropdownvalue.toString(),
-                          price: totalharga.toString(),
-                          nopol: _nopol,
-                          imageUrl: _imageUrl,
-                          status: 'Diproses',
-                          buktiTrans: '$transImage');
-                      createTrans(trans);
-                      final docCar = FirebaseFirestore.instance
-                          .collection('cars')
-                          .doc(_carId);
-                      docCar.update({'status': 'Used'});
-
-                      showNotif(context, "Mobil Berhasil di Pesan");
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => HomeScreen()));
+                        showNotif(context, "Mobil Berhasil di Pesan");
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => HomeScreen()));
+                      } else {
+                        showNotif(
+                            context, "Wajib Menyetujui Syarat dan Ketentuan");
+                      }
                     } else {
-                      showNotif(
-                          context, "Wajib Menyetujui Syarat dan Ketentuan");
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text('Booking Ditolak'),
+                                content: Text('Login untuk booking'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Tidak Sekarang'),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    WelcomePage()));
+                                      },
+                                      child: Text('Login'))
+                                ],
+                              ));
                     }
                   },
                   child: Text(

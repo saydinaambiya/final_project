@@ -12,7 +12,7 @@ class UploadApi {
     try {
       Dio dio = Dio();
 
-      String url = "http://10.140.170.138:8000/api/getdata";
+      String url = "http://172.20.10.3:8000/api/getdata";
 
       FormData formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(file.path, filename: fileName)
